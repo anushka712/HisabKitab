@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { IoIosAddCircle } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 
+
 const Billing = () => {
+  const [isModalOpen, setIsModelOpen] = useState(false);
   return (
     <>
     {/* main div for billing */}
@@ -11,9 +13,62 @@ const Billing = () => {
 
       <h2 className='mt-4 text-xl text-center'>Bills for customer</h2>
 
-      <div className='flex justify-end mr-2 cursor-pointer'>
-      <p className='text-right mr-2'> Add products </p>
-      <p className='mt-1 text-green-800'><IoIosAddCircle/></p>
+      <div className="flex justify-end">
+      
+        <div className="my-2 mr-3">
+          <button
+            className="bg-green-700 text-white px-2 py-1 rounded-lg"
+            onClick={() => setIsModelOpen(true)}
+          >
+            Add Products
+          </button>
+          {isModalOpen && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+              <div className="bg-white p-6 rounded shadow-lg ">
+                <h2 className="text-lg font-bold mb-4 text-center">
+                  Add a New Product
+                </h2>
+                <input
+                  type="text"
+                  className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                  placeholder="Enter the product name"
+                />
+                  <br />
+                <input
+                  type="text"
+                  placeholder="Enter Quantity"
+                  className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                />
+                <br />
+                <input
+                  type="text"
+                  placeholder="Rate"
+                  className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                />
+                <br />
+                <input
+                  type="text"
+                  placeholder="Total Price"
+                  className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                />
+                <div className="flex justify-end space-x-2">
+                  <button
+                    onClick={() => setIsModelOpen(false)}
+                    className="bg-red-500 px-4 py-2 rounded text-white"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                     onClick={() => setIsModelOpen(false)}
+                    className="bg-green-800 text-white px-4 py-2 rounded"
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       <table>
@@ -61,7 +116,7 @@ const Billing = () => {
 </div>
 
 <div  className=' flex justify-end mt-2 cursor-pointer'>
-<p className='font-bold bg-blue-500 text-white px-2 py-1 w-fit rounded-lg'>Print</p>
+<p className='font-bold bg-blue-500 text-white px-2 py-1 w-fit rounded-lg'>Send</p>
 </div>
  </>
   )
