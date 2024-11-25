@@ -19,6 +19,7 @@ const Bills = () => {
     await worker.initialize("eng");
 
     const {data} = await worker.recognize(selectedImage);
+    
     setTextResult(data.text);
     setLoading(false)
   }, [selectedImage] )
@@ -36,6 +37,10 @@ const Bills = () => {
       setSelectedImage(null);
       setTextResult("")
     }
+  }
+
+  const handleTextChange = (e) => {
+    setTextResult(e.target.value)
   }
 
   return (
@@ -71,7 +76,11 @@ const Bills = () => {
         ) : (
           textResult && (
             <div className='mt-12'>
-              <p>{textResult}</p>
+              <textarea 
+              value={textResult}
+              onChange={handleTextChange}
+              className='w-full h-60 p-2 border rounded-lg'
+              ></textarea>
             </div>
           )
         )}
