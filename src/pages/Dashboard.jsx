@@ -10,7 +10,7 @@ const Dashboard = () => {
   const location = useLocation();
 
   const links = [
-    { path : "/dashboard", label: "Dashboard", icon: AiFillDashboard },
+    { path : "/dashboard/chart", label: "Dashboard", icon: AiFillDashboard },
     { path : "/dashboard/billing", label: "Billing", icon: FaMoneyBillTrendUp },
     { path : "/dashboard/stock", label: "Stock", icon: RiStockFill },
     { path : "/dashboard/bills", label: "Bills", icon: FaRegNewspaper },
@@ -45,11 +45,6 @@ const Dashboard = () => {
         <div className="md:ml-[30%] p-2 md:w-[75%]">
           <div className="text-center p-4 shadow-xl">
             <h2 className="font-bold text-2xl">Sales Dashboard</h2>
-          </div>
-          <div>
-            <p className="text-center mt-2 text-blue-800">
-              Here we will show the chart
-            </p>
           </div>
           <div>
             <Outlet />
