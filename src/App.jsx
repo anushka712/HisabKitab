@@ -7,6 +7,8 @@ import Stock from './pages/Stock';
 import Signup from './pages/Signup';
 import Bills from './pages/Bills';
 import Chart from './pages/Chart';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
 
@@ -24,6 +26,7 @@ function App() {
 
         <Route path='/signup' element={<Signup/>}></Route>
       </Routes>
+      <ToastContainer/>
     </Router>
   )
 }
