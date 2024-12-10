@@ -46,7 +46,7 @@ const handleRegister = async (e)=>{
   }
 }
   return (
-    <div className='bg-gray-300 h-screen flex justify-center items-center p-6'>
+    <div className=' h-screen flex justify-center items-center p-6'>
     <div className='bg-white shadow-2xl px-16 py-10  rounded-xl'>
           <h2 className='text-gray-600 text-xl mb-2'>Access to Sales details!</h2>
           <form onSubmit={handleRegister} className='flex flex-col'>

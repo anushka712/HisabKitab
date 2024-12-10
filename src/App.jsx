@@ -7,6 +7,7 @@ import Stock from './pages/Stock';
 import Signup from './pages/Signup';
 import Bills from './pages/Bills';
 import Chart from './pages/Chart';
+import Home from './pages/Home';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -15,7 +16,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login/>}></Route>
+        <Route path="/" element={<Home/>}></Route>
+        <Route path="/login" element={<Login/>}></Route>
         <Route path="/dashboard" element={<Dashboard/>}>
         <Route index element={<Navigate to="/dashboard/chart" />} />
         <Route path="/dashboard/chart" element={<Chart/>}></Route>
@@ -23,7 +25,6 @@ function App() {
         <Route path='/dashboard/stock' element={<Stock/>}></Route>
         <Route path='/dashboard/bills' element={<Bills/>}></Route>
         </Route>
-
         <Route path='/signup' element={<Signup/>}></Route>
       </Routes>
       <ToastContainer/>
