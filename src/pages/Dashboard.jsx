@@ -6,6 +6,7 @@ import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { FaRegNewspaper } from "react-icons/fa";
 import { RiStockFill } from "react-icons/ri";
 import { toast } from "react-toastify";
+import { IoPeople } from "react-icons/io5";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -16,7 +17,8 @@ const Dashboard = () => {
     { path: "/dashboard/billing", label: "Billing", icon: FaMoneyBillTrendUp },
     { path: "/dashboard/stock", label: "Stock", icon: RiStockFill },
     { path: "/dashboard/bills", label: "Bills", icon: FaRegNewspaper },
-    { path: "", label: "Logout", icon: IoMdLogOut }, // No path for Logout
+    { path: "/dashboard/wholesellers", label: "Wholesellers", icon:  IoPeople},
+    { path: "", label: "Logout", icon: IoMdLogOut },
   ];
 
   

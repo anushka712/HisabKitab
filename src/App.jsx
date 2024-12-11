@@ -10,6 +10,7 @@ import Chart from './pages/Chart';
 import Home from './pages/Home';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Wholesellers from './pages/Wholesellers';
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
         <Route path="/dashboard/billing" element={<Billing/>}></Route>
         <Route path='/dashboard/stock' element={<Stock/>}></Route>
         <Route path='/dashboard/bills' element={<Bills/>}></Route>
+        <Route path='/dashboard/wholesellers' element={<Wholesellers/>}></Route>
         </Route>
         <Route path='/signup' element={<Signup/>}></Route>
       </Routes>
