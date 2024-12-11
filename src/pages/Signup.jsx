@@ -28,7 +28,9 @@ const handleRegister = async (e)=>{
     
     if (response.status === 200) {
       toast.success(response.data.message); 
-      // navigate('/');
+      setTimeout(() => {
+        navigate('/');
+      }, 2000); 
     }
   } catch (error) {
     if(error.response){
@@ -48,7 +50,7 @@ const handleRegister = async (e)=>{
   return (
     <div className=' h-screen flex justify-center items-center p-6'>
     <div className='bg-white shadow-2xl px-16 py-10  rounded-xl'>
-          <h2 className='text-gray-600 text-xl mb-2'>Access to Sales details!</h2>
+          <h2 className='text-gray-600 text-xl mb-2 text-center'>Access to Sales details!</h2>
           <form onSubmit={handleRegister} className='flex flex-col'>
           <input
                 type="email"
@@ -81,7 +83,7 @@ const handleRegister = async (e)=>{
               <button type="submit" className='bg-blue-600 w-full text-white font-bold px-2 py-2 mb-2 rounded-lg hover:bg-blue-800'>Sign up</button>
           </form>
         
-        <Link to='/' className='text-purple-800'>Already Signup?</Link>
+        <Link to='/login' className='text-purple-800'>Already Signup?</Link>
           
         </div>
     </div> 

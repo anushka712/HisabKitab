@@ -1,21 +1,30 @@
 import React from "react";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { AiFillDashboard } from "react-icons/ai";
 import { IoMdLogOut } from "react-icons/io";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { FaRegNewspaper } from "react-icons/fa";
 import { RiStockFill } from "react-icons/ri";
+import { toast } from "react-toastify";
 
 const Dashboard = () => {
   const location = useLocation();
+  const navigate = useNavigate(); // Hook for navigation
 
   const links = [
-    { path : "/dashboard/chart", label: "Dashboard", icon: AiFillDashboard },
-    { path : "/dashboard/billing", label: "Billing", icon: FaMoneyBillTrendUp },
-    { path : "/dashboard/stock", label: "Stock", icon: RiStockFill },
-    { path : "/dashboard/bills", label: "Bills", icon: FaRegNewspaper },
-    { path : "/logout", label: "Logout", icon: IoMdLogOut },
+    { path: "/dashboard/chart", label: "Dashboard", icon: AiFillDashboard },
+    { path: "/dashboard/billing", label: "Billing", icon: FaMoneyBillTrendUp },
+    { path: "/dashboard/stock", label: "Stock", icon: RiStockFill },
+    { path: "/dashboard/bills", label: "Bills", icon: FaRegNewspaper },
+    { path: "", label: "Logout", icon: IoMdLogOut }, // No path for Logout
   ];
+
+  
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    toast.success("User logout succcessfully")
+    navigate("/");
+  };
 
   return (
     <>
@@ -25,18 +34,29 @@ const Dashboard = () => {
           <h2 className="font-bold text-2xl">Sales Management</h2>
           <ul className="mt-4">
             {links.map(({ path, label, icon: Icon }) => (
-              <Link key={path} to={path}>
+              label === "Logout" ? (
                 <li
-                  className={`flex mt-2 p-1 rounded-lg ${
-                    location.pathname === path
-                      ? "bg-slate-400 text-black font-bold" // Active styles
-                      : "hover:bg-slate-400 hover:text-black" // Hover styles
-                  }`}
+                  key={label}
+                  onClick={handleLogout} // Logout handler
+                  className="flex mt-2 p-1 rounded-lg cursor-pointer hover:bg-slate-400 hover:text-black"
                 >
                   <Icon size={30} className="pr-2" />
                   <span>{label}</span>
                 </li>
-              </Link>
+              ) : (
+                <Link key={path} to={path}>
+                  <li
+                    className={`flex mt-2 p-1 rounded-lg ${
+                      location.pathname === path
+                        ? "bg-slate-400 text-black font-bold" // Active styles
+                        : "hover:bg-slate-400 hover:text-black" // Hover styles
+                    }`}
+                  >
+                    <Icon size={30} className="pr-2" />
+                    <span>{label}</span>
+                  </li>
+                </Link>
+              )
             ))}
           </ul>
         </div>
