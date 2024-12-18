@@ -2,12 +2,18 @@ import axios from 'axios'
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 function Login() {
 const [email, setEmail] = useState("")
 const [password, setPassword] = useState("")
 const navigate = useNavigate()
+
+const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+const togglePasswordVisibility = () => {
+  setIsPasswordVisible(!isPasswordVisible);
+};
 
 const handleLogin = async(e)=>{
   e.preventDefault();
@@ -55,13 +61,20 @@ const handleLogin = async(e)=>{
                 onChange={(e) => setEmail(e.target.value)}
                 className='bg-gray-600 mb-4 px-2 py-2 w-full lg:w-[20em] rounded-lg text-white placeholder:text-gray-200 outline-none required'
               />
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                 className='bg-gray-600 mb-4 px-2 py-2 w-full lg:w-[20em] rounded-lg text-white placeholder:text-gray-200 outline-none required'
-              />
+              <div className="relative mb-4">
+      <input
+        placeholder="Password"
+        type={isPasswordVisible ? "text" : "password"}
+        onChange={(e) => setPassword(e.target.value)}
+        className="bg-gray-600 px-4 py-2 w-full lg:w-[20em] rounded-lg text-white placeholder:text-gray-200 outline-none"
+      />
+      <p
+        onClick={togglePasswordVisibility}
+        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white"
+      >
+        {isPasswordVisible ? <FaEyeSlash /> : <FaEye />}
+      </p>
+    </div>
 
               <button type="submit" className='bg-blue-600 w-full text-white font-bold px-2 py-2 mb-2 rounded-lg hover:bg-blue-800'
               >Login</button>

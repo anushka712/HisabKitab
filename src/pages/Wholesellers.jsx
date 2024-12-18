@@ -38,6 +38,7 @@ const Wholesellers = () => {
 
     const addWholeSellers = async (e) =>{
         e.preventDefault();
+        
         try {
             const token = localStorage.getItem('authToken');
           const response =  await axios.post("https://localhost:7287/api/Wholesaler",{

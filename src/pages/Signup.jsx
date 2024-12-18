@@ -29,7 +29,7 @@ const handleRegister = async (e)=>{
     if (response.status === 200) {
       toast.success(response.data.message); 
       setTimeout(() => {
-        navigate('/');
+        navigate('/login');
       }, 2000); 
     }
   } catch (error) {
