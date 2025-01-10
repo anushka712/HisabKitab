@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Hamberger from './Hamberger';
 import Cross from './Cross'
+import { Link as ScrollLink } from "react-scroll";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -10,8 +11,8 @@ const Navbar = () => {
     setIsMenuOpen(!isMenuOpen)
   }
   return (
-    <div className="bg-gray-100 shadow-md ">
-      <div className="px-6 py-4 flex items-center justify-between mx-[10%]">
+    <div className="bg-gray-100 shadow-md sticky top-0 z-50">
+      <div className="px-6 py-4 flex items-center justify-between mx-[10%] ">
         {/* Logo */}
         <h1 className="text-green-600 font-extrabold text-3xl tracking-wide">
           HisabKitab
@@ -34,6 +35,14 @@ const Navbar = () => {
           >
             Features
           </Link>
+
+          <ScrollLink
+          smooth={true} duration={500}
+            to="contact"
+            className="hover:text-green-600 transition duration-300 hover:cursor-pointer"
+          >
+            Contact Us
+          </ScrollLink>
         </div>
 
         {/* Mobile Hamburger */}

@@ -8,6 +8,7 @@ import Signup from './pages/Signup';
 import Bills from './pages/Bills';
 import Chart from './pages/Chart';
 import Home from './pages/Home';
+import Contact from './components/Contact';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Wholesellers from './pages/Wholesellers';
@@ -28,6 +29,7 @@ function App() {
         <Route path='/dashboard/wholesellers' element={<Wholesellers/>}></Route>
         </Route>
         <Route path='/signup' element={<Signup/>}></Route>
+      <Route path='/contact' element={<Contact/>}></Route>
       </Routes>
       <ToastContainer/>
     </Router>
