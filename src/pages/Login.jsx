@@ -52,35 +52,35 @@ const handleLogin = async(e)=>{
   return (
     <div className=' h-screen flex justify-center items-center p-6'>
     <div className='bg-white shadow-2xl px-16 py-10  rounded-xl'>
-          <h2 className='text-gray-600 text-xl mb-2 text-center'>Access to Sales details!</h2>
+          <h2 className='text-green-600 text-xl mb-2 text-center'>Access to Sales details!</h2>
           <form onSubmit={handleLogin} className='flex flex-col'>
           <input
                 type="email"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className='bg-gray-600 mb-4 px-2 py-2 w-full lg:w-[20em] rounded-lg text-white placeholder:text-gray-200 outline-none required'
+                className='bg-gray-300 mb-4 px-2 py-2 w-full lg:w-[20em] rounded-lg text-black placeholder:text-gray-500 outline-none required focus:bg-gray-100 focus:border-blue-700 focus:outline-style: solid;'
               />
               <div className="relative mb-4">
       <input
         placeholder="Password"
         type={isPasswordVisible ? "text" : "password"}
         onChange={(e) => setPassword(e.target.value)}
-        className="bg-gray-600 px-4 py-2 w-full lg:w-[20em] rounded-lg text-white placeholder:text-gray-200 outline-none"
+        className='bg-gray-300 mb-4 px-2 py-2 w-full lg:w-[20em] rounded-lg text-black placeholder:text-gray-500 outline-none required focus:bg-gray-100 focus:border-blue-700 focus:outline-style: solid;'
       />
       <p
         onClick={togglePasswordVisibility}
-        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white"
+        className="absolute right-3 top-1/2 transform -translate-y-1/2  text-black"
       >
         {isPasswordVisible ? <FaEyeSlash /> : <FaEye />}
       </p>
     </div>
 
-              <button type="submit" className='bg-blue-600 w-full text-white font-bold px-2 py-2 mb-2 rounded-lg hover:bg-blue-800'
+              <button type="submit" className='bg-green-500 mb-4 px-2 py-2 w-full lg:w-[20em] rounded-lg text-white placeholder:text-gray-500 outline-none hover:bg-green-700 required focus:bg-gray-100 focus:border-blue-700 focus:outline-style: solid ;'
               >Login</button>
           </form>
         
-        <Link to='/signup' className='text-purple-800'>Sign-Up?</Link>
+        <Link to='/signup' className='text-green-500'>Sign-Up?</Link>
           
         </div>
     </div> 
