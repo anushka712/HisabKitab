@@ -29,12 +29,13 @@ const Navbar = () => {
           >
             Blog
           </Link>
-          <Link
-            to="/"
-            className="hover:text-green-600 transition duration-300"
+          <ScrollLink
+          smooth={true} duration={500}
+            to="featured"
+            className="hover:text-green-600 transition duration-300 hover:cursor-pointer"
           >
             Features
-          </Link>
+          </ScrollLink>
 
           <ScrollLink
           smooth={true} duration={500}
@@ -68,7 +69,7 @@ const Navbar = () => {
             Blog
           </Link>
           <Link
-            to="/"
+            to="/featured"
             className="block py-2 hover:text-green-600 transition duration-300"
             onClick={() => setIsMenuOpen(false)}
           >

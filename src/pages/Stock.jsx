@@ -1,11 +1,52 @@
 import React, { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { data } from "./Data";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Stock = () => {
   const [search, setSearch] = useState("");
   //console.log(data);
-  const [isModalOpen, setIsModelOpen] = useState(false);
+  const [isModalOpenStock, setIsModalOpenStock] = useState(false);
+  const [isModalOpenCategory, setIsModalOpenCategory] = useState(false);
+
+  const [categoryName, setCategoryName] = useState("");
+
+  const navigate = useNavigate();
+
+  const handleCategoryAdd = async (e) => {
+    e.preventDefault();
+    if (!categoryName) {
+      toast.error("Category Name is Required");
+      return;
+    }
+    try {
+      const response = await axios.post("https://localhost:7287/api/Category", {
+        categoryName,
+      });
+
+      console.log(response.data);
+
+      if (response.status === 200) {
+        toast.success("Category added successfully.");
+
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1000);
+      }
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data.message &&
+        error.response.data.message
+      ) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("An error occured!");
+      }
+    }
+  };
 
   return (
     <div>
@@ -25,11 +66,19 @@ const Stock = () => {
         <div className="mt-3 mr-3">
           <button
             className="bg-green-700 text-white px-2 py-1 rounded-lg"
-            onClick={() => setIsModelOpen(true)}
+            onClick={() => setIsModalOpenStock(true)}
           >
             Add Products
           </button>
-          {isModalOpen && (
+          <button
+            className="bg-green-700 text-white px-2 py-1 rounded-lg ml-4"
+            onClick={() => setIsModalOpenCategory(true)}
+          >
+            Add Category
+          </button>
+
+          {/* //For Products */}
+          {isModalOpenStock && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
               <div className="bg-white p-6 rounded shadow-lg ">
                 <h2 className="text-lg font-bold mb-4 text-center">
@@ -40,7 +89,7 @@ const Stock = () => {
                   className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
                   placeholder="Enter the product name"
                 />
-                  <br />
+                <br />
                 <input
                   type="text"
                   placeholder="Rate of a product"
@@ -66,18 +115,55 @@ const Stock = () => {
                 />
                 <div className="flex justify-end space-x-2">
                   <button
-                    onClick={() => setIsModelOpen(false)}
+                    onClick={() => setIsModalOpenStock(false)}
                     className="bg-red-500 px-4 py-2 rounded text-white"
                   >
                     Cancel
                   </button>
                   <button
-                     onClick={() => setIsModelOpen(false)}
+                    onClick={() => setIsModalOpenStock(false)}
                     className="bg-green-800 text-white px-4 py-2 rounded"
                   >
                     Add
                   </button>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* //For Category */}
+          {isModalOpenCategory && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+              <div className="bg-white p-6 rounded shadow-lg ">
+                <h2 className="text-lg font-bold mb-4 text-center">
+                  Add a New Category
+                </h2>
+                <form action="" onSubmit={handleCategoryAdd}>
+                  <input
+                    type="text"
+                    name="categoryName"
+                    value={categoryName}
+                    onChange={(e) => setCategoryName(e.target.value)}
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                    placeholder="Enter the Category Name"
+                  />
+                  <br />
+
+                  <div className="flex justify-end space-x-2">
+                    <button
+                      onClick={() => setIsModalOpenCategory(false)}
+                      className="bg-red-500 px-4 py-2 rounded text-white"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="bg-green-800 text-white px-4 py-2 rounded"
+                    >
+                      Add
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
           )}
@@ -98,25 +184,13 @@ const Stock = () => {
             </tr>
           </thead>
           <tbody>
-            {data
-              .filter((item) => {
-                return search === ""
-                  ? item
-                  : item.product.toLowerCase().includes(search.toLowerCase());
-              })
-              .map((item, index) => (
-                <tr key={index}>
-                  <td className="border border-gray-300 p-2">{item.product}</td>
-                  <td className="border border-gray-300 p-2">{item.rate}</td>
-                  <td className="border border-gray-300 p-2">
-                    {item.quantity}
-                  </td>
-                  <td className="border border-gray-300 p-2">
-                    {item.available}
-                  </td>
-                  <td className="border border-gray-300 p-2">{item.sold}</td>
-                </tr>
-              ))}
+            <tr>
+              <td className="border border-gray-300 p-2">1</td>
+              <td className="border border-gray-300 p-2">2</td>
+              <td className="border border-gray-300 p-2">3</td>
+              <td className="border border-gray-300 p-2"> 4</td>
+              <td className="border border-gray-300 p-2">5</td>
+            </tr>
           </tbody>
         </table>
       </div>

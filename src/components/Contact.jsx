@@ -2,11 +2,11 @@ import React from 'react'
 
 const Contact = () => {
   return (
-    <div className="h-screen ml-44">
-  <div className="flex flex-col md:flex-row items-center justify-between h-[85%]">
+    <div className="h-[700px] ml-44">
+  <div className="flex flex-col md:flex-row items-center justify-between h-[75%]">
      
-  <div className="flex flex-col justify-center items-center pt-24 pb-24 lg:ml-10">
-   <h2 className="py-4 text-2xl text-gray-400 font-bold">Let's connect...</h2>
+  <div className="flex flex-col justify-center items-center pt-24 pb-24 lg:ml-10 shadow-md">
+   <h2 className="py-4 text-2xl text-gray-400 font-bold">Message Us...</h2>
    <div className="p-8">
 <form >
       <label htmlFor="name">Name</label>
