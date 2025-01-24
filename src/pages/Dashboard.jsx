@@ -7,6 +7,7 @@ import { FaRegNewspaper } from "react-icons/fa";
 import { RiStockFill } from "react-icons/ri";
 import { toast } from "react-toastify";
 import { IoPeople } from "react-icons/io5";
+import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -17,14 +18,18 @@ const Dashboard = () => {
     { path: "/dashboard/billing", label: "Billing", icon: FaMoneyBillTrendUp },
     { path: "/dashboard/stock", label: "Stock", icon: RiStockFill },
     { path: "/dashboard/bills", label: "Bills", icon: FaRegNewspaper },
-    { path: "/dashboard/wholesellers", label: "Wholesellers", icon:  IoPeople},
+    { path: "/dashboard/wholesellers", label: "Wholesellers", icon: IoPeople },
     { path: "", label: "Logout", icon: IoMdLogOut },
+    {
+      path: "/dashboard/customers",
+      label: "Customers",
+      icon: GroupsOutlinedIcon,
+    },
   ];
 
-  
   const handleLogout = () => {
     localStorage.removeItem("authToken");
-    toast.success("User logout succcessfully")
+    toast.success("User logout succcessfully");
     navigate("/");
   };
 
@@ -35,7 +40,7 @@ const Dashboard = () => {
         <div className="text-white bg-black p-4 md:h-screen md:fixed md:w-[25%]">
           <h2 className="font-bold text-2xl">Sales Management</h2>
           <ul className="mt-4">
-            {links.map(({ path, label, icon: Icon }) => (
+            {links.map(({ path, label, icon: Icon }) =>
               label === "Logout" ? (
                 <li
                   key={label}
@@ -59,7 +64,7 @@ const Dashboard = () => {
                   </li>
                 </Link>
               )
-            ))}
+            )}
           </ul>
         </div>
 
