@@ -57,7 +57,6 @@ const Customer = () => {
   const fetchCustomers = async (pageNumber, pageSize, searchQuery) => {
     try {
       const token = localStorage.getItem("authToken");
-
       const response = await axios.get("https://localhost:7287/api/Customer", {
         params: {
           PageNumber: pageNumber,
@@ -68,12 +67,10 @@ const Customer = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      // console.log("Response Data:", response?.data?.data[0]?.customerName);
+// console.log("Response Data:", response?.data?.data[0]?.customerName);
       setCustomers(response?.data?.data);
     } catch (error) {
       toast.error("Error fetching customers:", error.response || error.message);
-
       if (error.response?.status === 400) {
         toast.error("Bad Request: Check query parameters or data format.");
       }

@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
-import { data } from "./Data";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -10,11 +9,14 @@ const Stock = () => {
   //console.log(data);
   const [isModalOpenStock, setIsModalOpenStock] = useState(false);
   const [isModalOpenCategory, setIsModalOpenCategory] = useState(false);
+  const [categories, setCategories] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
 
-  const [categoryName, setCategoryName] = useState("");
+  const [categoryName, setCategoryName] = useState([]);
 
   const navigate = useNavigate();
 
+  //Add Category
   const handleCategoryAdd = async (e) => {
     e.preventDefault();
     if (!categoryName) {
@@ -22,31 +24,78 @@ const Stock = () => {
       return;
     }
     try {
-      const response = await axios.post("https://localhost:7287/api/Category", {
-        categoryName,
-      });
-
-      console.log(response.data);
+      const token = localStorage.getItem("authToken");
+      const response = await axios.post(
+        "https://localhost:7287/api/Category",
+        { categoryName }, // Send as an object
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.status === 200) {
         toast.success("Category added successfully.");
-
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 1000);
+        setIsModalOpenCategory(false);
       }
     } catch (error) {
-      if (
-        error.response &&
-        error.response.data.message &&
-        error.response.data.message
-      ) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error("An error occured!");
+      toast.error(error.response?.data?.message || "An error occurred!");
+    }
+  };
+
+  //Add product
+  const handleProductAdd = async (e) => {
+    e.preventDefault();
+    if (!categoryName) {
+      toast.error("Category Name is Required");
+      return;
+    }
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await axios.post(
+        "https://localhost:7287/api/Category",
+        { categoryName }, // Send as an object
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success("Category added successfully.");
+        setIsModalOpenCategory(false);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "An error occurred!");
+    }
+  };
+
+  //Get Product
+  const getCategory = async (searchQuery) => {
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await axios.get("https://localhost:7287/api/Category", {
+        params: {
+          SearchQuery: searchQuery,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setCategories(response.data.data);
+    } catch (error) {
+      toast.error("Error fetching category:", error.response || error.message);
+      if (error.response?.status === 400) {
+        toast.error("Bad Request: Check query parameters or data format.");
       }
     }
   };
+
+  useEffect(() => {
+    getCategory();
+  }, []);
 
   return (
     <div>
@@ -84,49 +133,58 @@ const Stock = () => {
                 <h2 className="text-lg font-bold mb-4 text-center">
                   Add a New Product
                 </h2>
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
-                  placeholder="Enter the product name"
-                />
-                <br />
-                <input
-                  type="text"
-                  placeholder="Rate of a product"
-                  className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
-                />
-                <br />
-                <input
-                  type="text"
-                  placeholder="Total Quantity"
-                  className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
-                />
-                <br />
-                <input
-                  type="text"
-                  placeholder="Available Product"
-                  className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
-                />
-                <br />
-                <input
-                  type="text"
-                  placeholder="Sold Product"
-                  className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
-                />
-                <div className="flex justify-end space-x-2">
-                  <button
-                    onClick={() => setIsModalOpenStock(false)}
-                    className="bg-red-500 px-4 py-2 rounded text-white"
+                <form action="" onSubmit={handleProductAdd}>
+                  <input
+                    type="text"
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                    placeholder="Enter the product name"
+                  />
+                  <br />
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
                   >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={() => setIsModalOpenStock(false)}
-                    className="bg-green-800 text-white px-4 py-2 rounded"
-                  >
-                    Add
-                  </button>
-                </div>
+                    <option value="">Select a category</option>
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.categoryId}>
+                        {category.categoryName}
+                      </option>
+                    ))}
+                  </select>
+                  <br />
+                  <input
+                    type="text"
+                    placeholder="Total Quantity"
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                  />
+                  <br />
+                  <input
+                    type="text"
+                    placeholder="Available Product"
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                  />
+                  <br />
+                  <input
+                    type="text"
+                    placeholder="Sold Product"
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                  />
+                  <div className="flex justify-end space-x-2">
+                    <button
+                      onClick={() => setIsModalOpenStock(false)}
+                      className="bg-red-500 px-4 py-2 rounded text-white"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => setIsModalOpenStock(false)}
+                      className="bg-green-800 text-white px-4 py-2 rounded"
+                    >
+                      Add
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
           )}
