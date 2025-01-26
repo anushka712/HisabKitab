@@ -10,42 +10,24 @@ const Stock = () => {
   const [isModalOpenStock, setIsModalOpenStock] = useState(false);
   const [isModalOpenCategory, setIsModalOpenCategory] = useState(false);
   const [categories, setCategories] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
 
   const [categoryName, setCategoryName] = useState([]);
 
   const navigate = useNavigate();
 
+  //Priduct items
+  const [productName, setProductName] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [unit, setUnit] = useState("");
+  const [salesPrice, setSalesPrice] = useState("");
+  const [purchasePrice, setPurchasePrice] = useState("");
+  const [openStock, setOpenStock] = useState();
+  const [lowStock, setLowStock] = useState();
+  const [formDate, setFormDate] = useState("");
+  const [itemLocation, setItemLocation] = useState("");
+
   //Add Category
   const handleCategoryAdd = async (e) => {
-    e.preventDefault();
-    if (!categoryName) {
-      toast.error("Category Name is Required");
-      return;
-    }
-    try {
-      const token = localStorage.getItem("authToken");
-      const response = await axios.post(
-        "https://localhost:7287/api/Category",
-        { categoryName }, // Send as an object
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        toast.success("Category added successfully.");
-        setIsModalOpenCategory(false);
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "An error occurred!");
-    }
-  };
-
-  //Add product
-  const handleProductAdd = async (e) => {
     e.preventDefault();
     if (!categoryName) {
       toast.error("Category Name is Required");
@@ -93,6 +75,63 @@ const Stock = () => {
     }
   };
 
+  //Add product
+  const handleProductAdd = async (e) => {
+    e.preventDefault();
+    if (
+      !productName ||
+      !selectedCategory ||
+      !unit ||
+      !salesPrice ||
+      !purchasePrice ||
+      !openStock ||
+      !lowStock ||
+      !formDate ||
+      !itemLocation
+    ) {
+      toast.error("Product Detail is Required");
+      return;
+    }
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await axios.post(
+        "https://localhost:7287/api/Product",
+        {
+          productName,
+          categoryId: selectedCategory,
+          unit,
+          salesPrice,
+          purchasePrice,
+          openStock,
+          lowStock,
+          formDate,
+          itemLocation,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success("Product added successfully.");
+        setIsModalOpenStock(false);
+        setProductName("");
+        setSelectedCategory("");
+        setUnit("");
+        setSalesPrice("");
+        setPurchasePrice("");
+        setOpenStock("");
+        setLowStock("");
+        setFormDate("");
+        setItemLocation("");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "An error occurred!");
+    }
+  };
+
   useEffect(() => {
     getCategory();
   }, []);
@@ -136,6 +175,8 @@ const Stock = () => {
                 <form action="" onSubmit={handleProductAdd}>
                   <input
                     type="text"
+                    value={productName}
+                    onChange={(e) => setProductName(e.target.value)}
                     className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
                     placeholder="Enter the product name"
                   />
@@ -155,19 +196,57 @@ const Stock = () => {
                   <br />
                   <input
                     type="text"
+                    value={unit}
+                    onChange={(e) => setUnit(e.target.value)}
                     placeholder="Total Quantity"
                     className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
                   />
                   <br />
                   <input
-                    type="text"
-                    placeholder="Available Product"
+                    type="number"
+                    value={openStock}
+                    onChange={(e) => setOpenStock(e.target.value)}
+                    placeholder="Open stock"
                     className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
                   />
                   <br />
                   <input
-                    type="text"
-                    placeholder="Sold Product"
+                    type="number"
+                    value={lowStock}
+                    onChange={(e) => setLowStock(e.target.value)}
+                    placeholder="Low stock"
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                  />
+                  <br />
+                  <input
+                    type="string"
+                    value={itemLocation}
+                    onChange={(e) => setItemLocation(e.target.value)}
+                    placeholder="Item Location"
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                  />
+                  <br />
+                  <input
+                    type="date"
+                    value={formDate}
+                    onChange={(e) => setFormDate(e.target.value)}
+                    placeholder="Date"
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                  />
+                  <br />
+                  <input
+                    type="number"
+                    value={salesPrice}
+                    onChange={(e) => setSalesPrice(e.target.value)}
+                    placeholder="Sales Price"
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                  />
+                  <br />
+                  <input
+                    type="number"
+                    value={purchasePrice}
+                    onChange={(e) => setPurchasePrice(e.target.value)}
+                    placeholder="Purchase  Price"
                     className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
                   />
                   <div className="flex justify-end space-x-2">
@@ -178,7 +257,7 @@ const Stock = () => {
                       Cancel
                     </button>
                     <button
-                      onClick={() => setIsModalOpenStock(false)}
+                      type="submit"
                       className="bg-green-800 text-white px-4 py-2 rounded"
                     >
                       Add
