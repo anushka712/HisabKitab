@@ -16,6 +16,7 @@ const Stock = () => {
   const navigate = useNavigate();
 
   //Priduct items
+  const [products, setProducts] = useState([]);
   const [productName, setProductName] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [unit, setUnit] = useState("");
@@ -37,7 +38,7 @@ const Stock = () => {
       const token = localStorage.getItem("authToken");
       const response = await axios.post(
         "https://localhost:7287/api/Category",
-        { categoryName }, // Send as an object
+        { categoryName },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -132,8 +133,33 @@ const Stock = () => {
     }
   };
 
+  //Get Product
+  const getProduct = async (pageNumber, pageSize, searchQuery) => {
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await axios.get("https://localhost:7287/api/Product", {
+        params: {
+          PageNumber: pageNumber,
+          PageSize: pageSize,
+          SearchQuery: searchQuery,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      // console.log("Response Data:", response?.data?.data[0]?.customerName);
+      setProducts(response?.data?.data);
+    } catch (error) {
+      toast.error("Error fetching customers:", error.response || error.message);
+      if (error.response?.status === 400) {
+        toast.error("Bad Request: Check query parameters or data format.");
+      }
+    }
+  };
+
   useEffect(() => {
     getCategory();
+    getProduct();
   }, []);
 
   return (
@@ -307,27 +333,70 @@ const Stock = () => {
         </div>
       </div>
 
+      {/* GET Products */}
       <div>
         <table className="w-full text-sm text-left ">
           <thead className="text-xs border border-gray-600 text-black uppercase bg-gray-200 shadow-[inset_0_0_8px_rgba(0,0,0,0.6)]">
             <tr>
-              <th className="border border-gray-300 p-2 text-left">Products</th>
-              <th className="border border-gray-300 p-2 text-left">Rate</th>
-              <th className="border border-gray-300 p-2 text-left">Quantity</th>
               <th className="border border-gray-300 p-2 text-left">
-                Available
+                Categoty Name
               </th>
-              <th className="border border-gray-300 p-2 text-left">Sold</th>
+              <th className="border border-gray-300 p-2 text-left">fromDate</th>
+              <th className="border border-gray-300 p-2 text-left">
+                Item Location
+              </th>
+              <th className="border border-gray-300 p-2 text-left">
+                Low Stock
+              </th>
+              <th className="border border-gray-300 p-2 text-left">
+                Open Stock
+              </th>
+              <th className="border border-gray-300 p-2 text-left">
+                Product Name
+              </th>
+              <th className="border border-gray-300 p-2 text-left">
+                Purchase Price
+              </th>
+              <th className="border border-gray-300 p-2 text-left">
+                Sales Price
+              </th>
+              <th className="border border-gray-300 p-2 text-left">Unit</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td className="border border-gray-300 p-2">1</td>
-              <td className="border border-gray-300 p-2">2</td>
-              <td className="border border-gray-300 p-2">3</td>
-              <td className="border border-gray-300 p-2"> 4</td>
-              <td className="border border-gray-300 p-2">5</td>
-            </tr>
+            {products?.map((products) => {
+              return (
+                <tr key={products.id}>
+                  <td className="border border-gray-300 p-2">
+                    {products.categoryName}
+                  </td>
+                  <td className="border border-gray-300 p-2">
+                    {new Date(products.fromDate).toISOString().split("T")[0]}
+                  </td>
+                  <td className="border border-gray-300 p-2">
+                    {products.itemLocation}
+                  </td>
+                  <td className="border border-gray-300 p-2">
+                    {products.lowStock}
+                  </td>
+                  <td className="border border-gray-300 p-2">
+                    {products.openStock}
+                  </td>
+                  <td className="border border-gray-300 p-2">
+                    {products.productName}
+                  </td>
+                  <td className="border border-gray-300 p-2">
+                    {products.purchasePrice}
+                  </td>
+                  <td className="border border-gray-300 p-2">
+                    {products.salesPrice}
+                  </td>
+                  <td className="border border-gray-300 p-2">
+                    {products.unit}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

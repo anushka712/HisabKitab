@@ -34,7 +34,8 @@ const Customer = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = async (data) => {
+  //POST customers
+  const postCustomers = async (data) => {
     try {
       const token = localStorage.getItem("authToken");
       const response = await axios.post(
@@ -54,6 +55,8 @@ const Customer = () => {
     }
   };
 
+
+  //GET Customers
   const fetchCustomers = async (pageNumber, pageSize, searchQuery) => {
     try {
       const token = localStorage.getItem("authToken");
@@ -136,7 +139,7 @@ const Customer = () => {
                 <Typography variant="h4" gutterBottom textAlign="center">
                   Customer Form
                 </Typography>
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={handleSubmit(postCustomers)}>
                   <Grid container spacing={2}>
                     {/* Customer Name */}
                     <Grid item xs={12}>

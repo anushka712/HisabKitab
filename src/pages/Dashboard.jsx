@@ -19,12 +19,12 @@ const Dashboard = () => {
     { path: "/dashboard/stock", label: "Stock", icon: RiStockFill },
     { path: "/dashboard/bills", label: "Bills", icon: FaRegNewspaper },
     { path: "/dashboard/wholesellers", label: "Wholesellers", icon: IoPeople },
-    { path: "", label: "Logout", icon: IoMdLogOut },
     {
       path: "/dashboard/customers",
       label: "Customers",
       icon: GroupsOutlinedIcon,
     },
+    { path: "", label: "Logout", icon: IoMdLogOut },
   ];
 
   const handleLogout = () => {
