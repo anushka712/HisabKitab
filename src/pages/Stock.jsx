@@ -55,7 +55,7 @@ const Stock = () => {
     }
   };
 
-  //Get Product
+  //Get Category
   const getCategory = async (searchQuery) => {
     try {
       const token = localStorage.getItem("authToken");
@@ -371,7 +371,7 @@ const Stock = () => {
                     {products.categoryName}
                   </td>
                   <td className="border border-gray-300 p-2">
-                    {new Date(products.fromDate).toISOString().split("T")[0]}
+                    {new Date(products.fromDate).toISOString().split('T')[0]}
                   </td>
                   <td className="border border-gray-300 p-2">
                     {products.itemLocation}

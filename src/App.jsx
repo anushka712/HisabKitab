@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
-import Billing from "./pages/Billing";
+import SalesBill from "./pages/SalesBill";
 import Stock from "./pages/Stock";
 import Signup from "./pages/Signup";
 import Bills from "./pages/Bills";
@@ -27,7 +27,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />}>
           <Route index element={<Navigate to="/dashboard/chart" />} />
           <Route path="/dashboard/chart" element={<Chart />}></Route>
-          <Route path="/dashboard/billing" element={<Billing />}></Route>
+          <Route path="/dashboard/billing" element={<SalesBill />}></Route>
           <Route path="/dashboard/stock" element={<Stock />}></Route>
           <Route path="/dashboard/customers" element={<Customers />}></Route>
           <Route path="/dashboard/bills" element={<Bills />}></Route>
