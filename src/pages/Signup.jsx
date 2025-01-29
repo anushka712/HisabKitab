@@ -50,7 +50,7 @@ const handleRegister = async (e)=>{
   return (
     <div className=' h-screen flex justify-center items-center p-6'>
     <div className='bg-white shadow-2xl px-16 py-10  rounded-xl'>
-          <h2 className='text-green-600 text-xl mb-2 text-center '>Access to Sales details!</h2>
+          <h2 className='text-green-600 text-xl mb-2 text-center '>Welcome to HisabKitab</h2>
           <form onSubmit={handleRegister} className='flex flex-col'>
           <input
                 type="email"
@@ -58,28 +58,28 @@ const handleRegister = async (e)=>{
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 // className='bg-gray-300 mb-4 px-2 py-2 w-full lg:w-[20em] rounded-lg text-black placeholder:text-gray-500 outline-none required'
-                className='bg-gray-300 mb-4 px-2 py-2 w-full lg:w-[20em] rounded-lg text-black placeholder:text-gray-500 outline-none required focus:bg-gray-100 focus:border-blue-700 focus:outline-style: solid;'
+                className='bg-gray-300 mb-4 px-2 py-2 w-full lg:w-[20em] rounded-lg text-black placeholder:text-gray-500 outline-none required focus:bg-white focus:ring-2 focus:ring-green-400  focus:outline-style'
               />
               <input
                 type="password"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className='bg-gray-300 mb-4 px-2 py-2 w-full lg:w-[20em] rounded-lg text-black placeholder:text-gray-500 outline-none required focus:bg-gray-100 focus:border-blue-700 focus:outline-style: solid;'
+                className='bg-gray-300 mb-4 px-2 py-2 w-full lg:w-[20em] rounded-lg text-black placeholder:text-gray-500 outline-none required focus:bg-white focus:ring-2 focus:ring-green-400  focus:outline-style'
               />
               <input
                 type="text"
                 placeholder="Enter your full name"
                 value={fullName}
                 onChange={(e) => setfullName(e.target.value)}
-                className='bg-gray-300 mb-4 px-2 py-2 w-full lg:w-[20em] rounded-lg text-black placeholder:text-gray-500 outline-none required focus:bg-gray-100 focus:border-blue-700 focus:outline-style: solid;'
+                className='bg-gray-300 mb-4 px-2 py-2 w-full lg:w-[20em] rounded-lg text-black placeholder:text-gray-500 outline-none required focus:bg-white focus:ring-2 focus:ring-green-400  focus:outline-style'
               />
               <input
                 type="text"
                 placeholder="Enter your pan number"
                 value={sPanNo}
                 onChange={(e) => setsPanNo(e.target.value)}
-                 className='bg-gray-300 mb-4 px-2 py-2 w-full lg:w-[20em] rounded-lg text-black placeholder:text-gray-500 outline-none required focus:bg-gray-100 focus:border-blue-700 focus:outline-style: solid;'
+                 className='bg-gray-300 mb-4 px-2 py-2 w-full lg:w-[20em] rounded-lg text-black placeholder:text-gray-500 outline-none required focus:bg-white focus:ring-2 focus:ring-green-400  focus:outline-style'
               />
               <button type="submit" className='bg-green-500 w-full text-white font-bold px-2 py-2 mb-2 rounded-lg hover:bg-green-700'>Sign up</button>
           </form>

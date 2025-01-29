@@ -7,6 +7,7 @@ import { FaRegNewspaper } from "react-icons/fa";
 import { RiStockFill } from "react-icons/ri";
 import { toast } from "react-toastify";
 import { IoPeople } from "react-icons/io5";
+import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -17,25 +18,34 @@ const Dashboard = () => {
     { path: "/dashboard/billing", label: "Billing", icon: FaMoneyBillTrendUp },
     { path: "/dashboard/stock", label: "Stock", icon: RiStockFill },
     { path: "/dashboard/bills", label: "Bills", icon: FaRegNewspaper },
-    { path: "/dashboard/wholesellers", label: "Wholesellers", icon:  IoPeople},
+    { path: "/dashboard/wholesellers", label: "Wholesellers", icon: IoPeople },
+    { path: "/dashboard/customers", label: "Customers", icon: GroupsOutlinedIcon },
     { path: "", label: "Logout", icon: IoMdLogOut },
   ];
 
-  
+  const titles = {
+    "/dashboard/chart": "Dashboard",
+    "/dashboard/billing": "Sales Bill for Customer",
+    "/dashboard/stock": "Stock",
+    "/dashboard/bills": "Bills",
+    "/dashboard/wholesellers": "Wholesellers",
+    "/dashboard/customers": "Customers"
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("authToken");
-    toast.success("User logout succcessfully")
+    toast.success("User logged out successfully");
     navigate("/");
   };
 
   return (
     <>
-      <div className="flex flex-col md:flex-row px-4">
+      <div className="flex flex-col md:flex-row ">
         {/* Sidebar */}
-        <div className="text-white bg-black p-4 md:h-screen md:fixed md:w-[25%]">
+        <div className="text-white bg-black p-4 md:h-screen md:fixed md:w-[20%]">
           <h2 className="font-bold text-2xl">Sales Management</h2>
           <ul className="mt-4">
-            {links.map(({ path, label, icon: Icon }) => (
+            {links.map(({ path, label, icon: Icon }) =>
               label === "Logout" ? (
                 <li
                   key={label}
@@ -59,14 +69,14 @@ const Dashboard = () => {
                   </li>
                 </Link>
               )
-            ))}
+            )}
           </ul>
         </div>
 
         {/* Main Content */}
-        <div className="md:ml-[30%] p-2 md:w-[75%]">
+        <div className="md:ml-[20%] p-4 md:w-[80%]">
           <div className="text-center p-4 shadow-xl">
-            <h2 className="font-bold text-2xl">Sales Dashboard</h2>
+            <h2 className="font-bold text-2xl">{titles[location.pathname] || "Sales Dashboard"}</h2>
           </div>
           <div>
             <Outlet />
