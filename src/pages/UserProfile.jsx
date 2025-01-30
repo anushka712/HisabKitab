@@ -66,9 +66,7 @@ const UserProfile = () => {
 
   return (
     <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-lg my-2">
-      <h1 className="text-2xl font-semibold text-gray-700 text-center mb-6">
-        Update User Profile
-      </h1>
+      
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex flex-col">
           <label htmlFor="email" className="text-gray-600">

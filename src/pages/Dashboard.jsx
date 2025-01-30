@@ -9,6 +9,8 @@ import { toast } from "react-toastify";
 import { FaUserGroup } from "react-icons/fa6";
 import { FaUserAlt } from "react-icons/fa";
 import { FaUsers } from "react-icons/fa";
+import { TimeAndUser } from "../components/TimeAndUser";
+import { Card } from "../components/Cards";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -41,9 +43,9 @@ const Dashboard = () => {
 
   return (
     <>
-      <div className="flex flex-col md:flex-row px-4">
+      <div className="flex flex-col md:flex-row ">
         {/* Sidebar */}
-        <div className="text-white bg-black p-4 md:h-screen md:fixed md:w-[25%]">
+        <div className="text-white bg-black  md:h-screen md:fixed md:w-[20%] pl-2">
           <h2 className="font-bold text-2xl">Sales Management</h2>
           <ul className="mt-4">
             {links.map(({ path, label, icon: Icon }) =>
@@ -75,10 +77,9 @@ const Dashboard = () => {
         </div>
 
         {/* Main Content */}
-        <div className="md:ml-[30%] p-2 md:w-[75%]">
-          <div className="text-center p-4 shadow-xl">
-            <h2 className="font-bold text-2xl">Sales Dashboard</h2>
-          </div>
+        <div className="md:ml-[20%] md:w-[80%]">
+          <TimeAndUser />
+          <Card />
           <div>
             <Outlet />
           </div>

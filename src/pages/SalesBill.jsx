@@ -178,15 +178,11 @@ const SalesBill = () => {
   return (
     <>
       <div className="w-full h-screen">
-        <h2 className="mt-4 text-xl text-center">Bills for customer</h2>
+        <h2 className="mt-4 text-xl text-center">Sales Bill</h2>
 
         <div className="flex w-full">
           <div className="my-2 mr-3 w-full">
             <div className="bg-white p-6 rounded shadow-lg w-full">
-              <h2 className="text-lg font-bold mb-4 text-center">
-                Issue New Bill
-              </h2>
-
               <form action="" onSubmit={handleSubmit}>
                 <div className="flex gap-4 mb-6 w-full">
                   <input
@@ -403,7 +399,7 @@ const SalesBill = () => {
                     type="submit"
                     className="bg-green-800 text-white px-4 py-2 rounded"
                   >
-                    Add
+                    Submit Bill
                   </button>
                 </div>
               </form>
