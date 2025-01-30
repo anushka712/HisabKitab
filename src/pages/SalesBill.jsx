@@ -207,7 +207,7 @@ const SalesBill = () => {
                   />
 
                   <select
-                    className="border border-gray-300 rounded px-3 py-1 mb-2 w-full"
+                    className="border border-gray-300 rounded px-3 py-1 mb-2 w-full text-gray-800"
                     name="selectedCustomerId"
                     value={selectedCustomerId}
                     onChange={(e) => {
@@ -229,12 +229,12 @@ const SalesBill = () => {
 
                 {/* Issue New Bill Button */}
                 <button
-                  className="bg-green-700 text-white px-2 py-1 rounded-lg"
+                  className="bg-green-700 text-white px-2 py-1 rounded-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
                   onClick={() => {
                     setIsModelOpen(true);
-                    setIsButtonDisabled(true); // Disable the button after the first click
+                    setIsButtonDisabled(true);
                   }}
-                  disabled={isButtonDisabled} // Disable the button if clicked
+                  disabled={isButtonDisabled}
                 >
                   Issue New Bill
                 </button>
@@ -243,10 +243,12 @@ const SalesBill = () => {
                 {isModelOpen && (
                   <div className="mt-4">
                     <div className="mb-4">
-                      <div className="grid grid-cols-6 gap-4">
+                      <div className="grid grid-cols-6">
                         {/* Static Headings for the first time */}
                         <div className="col-span-2">
-                          <label className="block mb-1">Product</label>
+                          <label className="block mb-1 font-semibold text-slate-900">
+                            Product
+                          </label>
                         </div>
                         <div>
                           <label className="block mb-1">Quantity</label>
@@ -267,16 +269,18 @@ const SalesBill = () => {
                       {/* Products Inputs */}
                       {products.map((product, index) => (
                         <div key={index} className="mb-1">
-                          <div className="grid grid-cols-6 gap-4">
+                          <div className="grid grid-cols-6 ">
                             {/* Product Name */}
                             <div className="col-span-2">
                               <select
-                                className="border border-gray-300 rounded px-3 py-1 w-full"
+                                className="border border-gray-300 rounded px-3 py-1 w-full text-gray-800"
                                 name="productId"
                                 value={product.productId}
                                 onChange={(e) => handleProductChange(index, e)}
                               >
-                                <option value="">Select a product</option>
+                                <option value="" className="text-gray-400">
+                                  Select a product
+                                </option>
                                 {availableProducts.map((availableProduct) => (
                                   <option
                                     key={availableProduct.productId}
@@ -294,6 +298,7 @@ const SalesBill = () => {
                               <input
                                 type="number"
                                 name="quantity"
+                                placeholder="Enter Quantity"
                                 value={product.quantity}
                                 onChange={(e) => handleProductChange(index, e)}
                                 className="border border-gray-300 rounded px-3 py-1 w-full"
@@ -305,6 +310,7 @@ const SalesBill = () => {
                               <input
                                 type="number"
                                 name="rate"
+                                placeholder="Enter Rate"
                                 value={product.rate}
                                 onChange={(e) => handleProductChange(index, e)}
                                 className="border border-gray-300 rounded px-3 py-1 w-full"
@@ -316,6 +322,7 @@ const SalesBill = () => {
                               <input
                                 type="number"
                                 name="discount"
+                                placeholder="Enter Discount"
                                 value={product.discount}
                                 onChange={(e) => handleProductChange(index, e)}
                                 className="border border-gray-300 rounded px-3 py-1 w-full"
@@ -326,6 +333,7 @@ const SalesBill = () => {
                             <div>
                               <input
                                 type="number"
+                                placeholder="Enter Discount Amount"
                                 name="discountAmount"
                                 value={product.discountAmount}
                                 onChange={(e) => handleProductChange(index, e)}

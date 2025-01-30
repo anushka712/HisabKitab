@@ -6,8 +6,9 @@ import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { FaRegNewspaper } from "react-icons/fa";
 import { RiStockFill } from "react-icons/ri";
 import { toast } from "react-toastify";
-import { IoPeople } from "react-icons/io5";
-import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
+import { FaUserGroup } from "react-icons/fa6";
+import { FaUserAlt } from "react-icons/fa";
+import { FaUsers } from "react-icons/fa";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -15,14 +16,19 @@ const Dashboard = () => {
 
   const links = [
     { path: "/dashboard/chart", label: "Dashboard", icon: AiFillDashboard },
+    { path: "/dashboard/user", label: "Profile", icon: FaUserAlt },
     { path: "/dashboard/billing", label: "Billing", icon: FaMoneyBillTrendUp },
     { path: "/dashboard/stock", label: "Stock", icon: RiStockFill },
     { path: "/dashboard/bills", label: "Bills", icon: FaRegNewspaper },
-    { path: "/dashboard/wholesellers", label: "Wholesellers", icon: IoPeople },
+    {
+      path: "/dashboard/wholesellers",
+      label: "Wholesellers",
+      icon: FaUserGroup,
+    },
     {
       path: "/dashboard/customers",
       label: "Customers",
-      icon: GroupsOutlinedIcon,
+      icon: FaUsers,
     },
     { path: "", label: "Logout", icon: IoMdLogOut },
   ];
