@@ -1,29 +1,48 @@
-import React from 'react'
-import { Chart as ChartJS, defaults } from "chart.js/auto";
-import { Bar } from "react-chartjs-2";
+import React from "react";
+import { BarChart } from "@mui/x-charts/BarChart";
+import { LineChart } from "@mui/x-charts/LineChart";
 
 const Chart = () => {
   return (
-    <div className='flex justify-center items-center h-screen'>
-      <div style={{ width: "80%", height: "70vh" }}>
-    <Bar
-    data={{
-      labels:["Pen","Copy", "Book"],
-      datasets:[
-        {
-          label: "Revenue",
-          data:[200, 300, 400],
-        },
-        {
-          label:"Loss",
-          data:[80, 70, 20],
-        }
-      ]
-    }}
-    />
-  </div></div>
-    
-  )
-}
+    <div className="pl-2 flex">
+      <LineChart
+        xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
+        series={[
+          {
+            data: [2, 5.5, 2, 8.5, 1.5, 5],
+          },
+        ]}
+        width={500}
+        height={300}
+      />
+      <BarChart
+        xAxis={[
+          {
+            id: "barCategories",
+            data: ["bar A", "bar B", "bar C"],
+            scaleType: "band",
+          },
+        ]}
+        series={[
+          {
+            data: [2, 5, 3],
+          },
+        ]}
+        width={500}
+        height={300}
+      />
+      <LineChart
+        xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
+        series={[
+          {
+            data: [2, 5.5, 2, 8.5, 1.5, 5],
+          },
+        ]}
+        width={500}
+        height={300}
+      />
+    </div>
+  );
+};
 
-export default Chart
+export default Chart;

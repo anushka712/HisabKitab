@@ -63,7 +63,10 @@ const Bills = () => {
   };
 
   return (
-    <div className="mt-4">
+    <div className="mt-4 md:ml-[20%] md:w-[80%] px-10">
+      <h2 className="text-xl text-slate-800 text-center mb-10">
+        Upload Your Bills here
+      </h2>
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-2 gap-2">
           <input

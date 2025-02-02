@@ -18,6 +18,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Wholesellers from "./pages/Wholesellers";
 import Customers from "./pages/Customers";
 import UserProfile from "./pages/UserProfile";
+import MainComponent from "./components/MainComponent";
 
 function App() {
   return (
@@ -26,8 +27,11 @@ function App() {
         <Route path="/" element={<Home />}></Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/dashboard" element={<Dashboard />}>
-          <Route index element={<Navigate to="/dashboard/chart" />} />
-          <Route path="/dashboard/chart" element={<Chart />}></Route>
+          <Route index element={<Navigate to="/dashboard/main-component" />} />
+          <Route
+            path="/dashboard/main-component"
+            element={<MainComponent />}
+          ></Route>
           <Route path="/dashboard/billing" element={<SalesBill />}></Route>
           <Route path="/dashboard/stock" element={<Stock />}></Route>
           <Route path="/dashboard/customers" element={<Customers />}></Route>

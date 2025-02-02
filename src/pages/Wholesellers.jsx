@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { MdDelete } from "react-icons/md";
+import { FaSearch } from "react-icons/fa";
 import { FaEdit } from "react-icons/fa";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Box, Button, Typography } from "@mui/material";
 
 const Wholesellers = () => {
+  const [search, setSearch] = useState("");
   const [isModalOpen, setIsModelOpen] = useState(false);
 
   const [wholeSellers, setWholeSellers] = useState([]);
@@ -13,6 +16,11 @@ const Wholesellers = () => {
   const [sellerName, setSellerName] = useState("");
   const [address, setAddress] = useState("");
   const [phoneNo, setPhoneNo] = useState("");
+
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handlewholesellers = async () => {
     try {
@@ -77,135 +85,185 @@ const Wholesellers = () => {
   return (
     <>
       {/* main div for wholesellers */}
-      <div>
+      <div className="md:ml-[20%] md:w-[80%] px-8">
         <h2 className="mt-8 text-2xl text-center font-bold">Wholesellers</h2>
+        <div className=" flex justify-between">
+          <div className="flex items-center justify-between border border-gray-300 rounded-md px-2 w-64 my-2 ">
+            <input
+              type="text"
+              className="outline-none w-full pl-2 pr-8 py-1 text-gray-700"
+              placeholder="Search..."
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <button className="text-gray-500">
+              <FaSearch size={20} />
+            </button>
+          </div>
 
-        <div className="flex justify-end">
-          <div className="my-2 mr-3">
+          <div className="flex justify-between items-center mt-2 ">
             <button
               className="bg-green-700 text-white px-2 py-1 rounded-lg"
               onClick={() => setIsModelOpen(true)}
             >
               Add Wholesellers
             </button>
-            {isModalOpen && (
-              <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                <div className="bg-white p-12 rounded shadow-lg ">
-                  <h2 className="text-lg font-bold mb-4 text-center">
-                    Add a New Wholesellers
-                  </h2>
-
-                  {/* form start */}
-                  <div>
-                    <form onSubmit={addWholeSellers}>
-                      <input
-                        type="text"
-                        className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
-                        placeholder="Enter the Pan No:"
-                        value={panNo}
-                        onChange={(e) => setPanNo(e.target.value)}
-                      />
-                      <br />
-                      <input
-                        type="text"
-                        placeholder="Enter seller name"
-                        className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
-                        value={sellerName}
-                        onChange={(e) => setSellerName(e.target.value)}
-                      />
-                      <br />
-                      <input
-                        type="text"
-                        placeholder="Address"
-                        className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                      />
-                      <br />
-                      <input
-                        type="text"
-                        placeholder="Phone No:"
-                        className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
-                        value={phoneNo}
-                        onChange={(e) => setPhoneNo(e.target.value)}
-                      />
-                      <div className="flex justify-end space-x-2">
-                        <button
-                          onClick={() => setIsModelOpen(false)}
-                          className="bg-red-500 px-4 py-2 rounded text-white"
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          type="submit"
-                          className="bg-green-800 text-white px-4 py-2 rounded"
-                        >
-                          Add
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
-      
-      </div>
+        {isModalOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white p-12 rounded shadow-lg">
+              <h2 className="text-lg font-bold mb-4 text-center">
+                Add a New Wholesellers
+              </h2>
 
-      <div>
-        <table className="w-full text-sm text-left ">
-          <thead className="text-xs border border-gray-600 text-black uppercase bg-gray-200 shadow-[inset_0_0_8px_rgba(0,0,0,0.6)]">
-            <tr>
-              <th className="border border-gray-300 p-2 text-left">Pan No:</th>
-              <th className="border border-gray-300 p-2 text-left">
-                Seller Name
-              </th>
-              <th className="border border-gray-300 p-2 text-left">Address</th>
-              <th className="border border-gray-300 p-2 text-left">
-                Phone No:
-              </th>
-              <th className="border border-gray-300 p-2 text-left">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {wholeSellers.map((wholeSeller, index) => (
-              <tr key={index}>
-                <td className="border border-gray-300 p-2">
-                  {wholeSeller.panNo}
-                </td>
-                <td className="border border-gray-300 p-2">
-                  {wholeSeller.sellerName}
-                </td>
-                <td className="border border-gray-300 p-2">
-                  {wholeSeller.address}
-                </td>
-                <td className="border border-gray-300 p-2">
-                  {wholeSeller.phoneNo}
-                </td>
-                <td className="border border-gray-300 p-2">
-                  <span className="flex cursor-pointer justify-around">
-                    {/* Edit Button */}
-                    <span className="flex items-center pr-2 group">
-                      <FaEdit className="mt-1 text-green-700" />
-                      <span className="ml-1 text-green-700 opacity-0 group-hover:opacity-100 transition-opacity">
-                        Edit
-                      </span>
-                    </span>
-                    {/* Delete Button */}
-                    <span className="flex items-center group">
-                      <MdDelete className="mt-1 text-red-600" />
-                      <span className="ml-1 text-red-600 opacity-0 group-hover:opacity-100 transition-opacity">
-                        Delete
-                      </span>
-                    </span>
-                  </span>
-                </td>
+              {/* form start */}
+              <div>
+                <form onSubmit={addWholeSellers}>
+                  <input
+                    type="text"
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                    placeholder="Enter the Pan No:"
+                    value={panNo}
+                    onChange={(e) => setPanNo(e.target.value)}
+                  />
+                  <br />
+                  <input
+                    type="text"
+                    placeholder="Enter seller name"
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                    value={sellerName}
+                    onChange={(e) => setSellerName(e.target.value)}
+                  />
+                  <br />
+                  <input
+                    type="text"
+                    placeholder="Address"
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                  />
+                  <br />
+                  <input
+                    type="text"
+                    placeholder="Phone No:"
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                    value={phoneNo}
+                    onChange={(e) => setPhoneNo(e.target.value)}
+                  />
+                  <div className="flex justify-end space-x-2">
+                    <button
+                      onClick={() => setIsModelOpen(false)}
+                      className="bg-red-500 px-4 py-2 rounded text-white"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="bg-green-800 text-white px-4 py-2 rounded"
+                    >
+                      Add
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div>
+          <table className="w-full text-sm text-left ">
+            <thead className="text-xs border border-black text-black uppercase ">
+              <tr>
+                <th className="border border-gray-300 p-2 text-left py-4">
+                  Pan No:
+                </th>
+                <th className="border border-gray-300 p-2 text-left">
+                  Seller Name
+                </th>
+                <th className="border border-gray-300 p-2 text-left">
+                  Address
+                </th>
+                <th className="border border-gray-300 p-2 text-left">
+                  Phone No:
+                </th>
+                <th className="border border-gray-300 p-2 text-left">
+                  Actions
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {wholeSellers.length > 0 ? (
+                wholeSellers.map((wholeSeller, index) => (
+                  <tr key={index}>
+                    <td className="border border-gray-300 p-2">
+                      {wholeSeller.panNo}
+                    </td>
+                    <td className="border border-gray-300 p-2">
+                      {wholeSeller.sellerName}
+                    </td>
+                    <td className="border border-gray-300 p-2">
+                      {wholeSeller.address}
+                    </td>
+                    <td className="border border-gray-300 p-2">
+                      {wholeSeller.phoneNo}
+                    </td>
+                    <td className="border border-gray-300 p-2">
+                      <span className="flex cursor-pointer justify-around">
+                        {/* Edit Button */}
+                        <span className="flex items-center pr-2 group">
+                          <FaEdit className="mt-1 text-green-700" />
+                          <span className="ml-1 text-green-700 opacity-0 group-hover:opacity-100 transition-opacity">
+                            Edit
+                          </span>
+                        </span>
+                        {/* Delete Button */}
+                        <span className="flex items-center group">
+                          <MdDelete className="mt-1 text-red-600" />
+                          <span className="ml-1 text-red-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                            Delete
+                          </span>
+                        </span>
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="border border-gray-300 px-4 py-2 text-center"
+                  >
+                    No Wholesellers found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: "1rem",
+          }}
+        >
+          <Button
+            variant="outlined"
+            onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
+            disabled={pageNumber === 1 || loading}
+          >
+            Previous
+          </Button>
+          <Typography>Page {pageNumber}</Typography>
+          <Button
+            variant="outlined"
+            onClick={() => setPageNumber((prev) => prev + 1)}
+            disabled={loading}
+          >
+            Next
+          </Button>
+        </Box>
       </div>
     </>
   );

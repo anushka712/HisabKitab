@@ -3,6 +3,7 @@ import { FaSearch } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Box, Typography, Button } from "@mui/material";
 
 const Stock = () => {
   const [search, setSearch] = useState("");
@@ -26,6 +27,11 @@ const Stock = () => {
   const [lowStock, setLowStock] = useState();
   const [formDate, setFormDate] = useState("");
   const [itemLocation, setItemLocation] = useState("");
+
+  const [pageSize, setPageSize] = useState(10);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [pageNumber, setPageNumber] = useState(1);
 
   //Add Category
   const handleCategoryAdd = async (e) => {
@@ -163,8 +169,9 @@ const Stock = () => {
   }, []);
 
   return (
-    <div>
-      <div className="flex justify-between">
+    <div className="md:ml-[20%] md:w-[80%] px-8 mt-4">
+      <h2 className="mt-8 text-2xl text-center font-bold">Stock</h2>
+      <div className="flex justify-between ">
         <div className="flex items-center border border-gray-300 rounded-md px-2 w-64 my-2">
           <input
             type="text"
@@ -179,13 +186,13 @@ const Stock = () => {
 
         <div className="mt-3 mr-3">
           <button
-            className="bg-green-700 text-white px-2 py-1 rounded-lg"
+            className="bg-green-600 text-white px-2 py-1 rounded-lg"
             onClick={() => setIsModalOpenStock(true)}
           >
             Add Products
           </button>
           <button
-            className="bg-green-700 text-white px-2 py-1 rounded-lg ml-4"
+            className="bg-green-600 text-white px-2 py-1 rounded-lg ml-4"
             onClick={() => setIsModalOpenCategory(true)}
           >
             Add Category
@@ -284,7 +291,7 @@ const Stock = () => {
                     </button>
                     <button
                       type="submit"
-                      className="bg-green-800 text-white px-4 py-2 rounded"
+                      className="bg-green-600 text-white px-4 py-2 rounded"
                     >
                       Add
                     </button>
@@ -321,7 +328,7 @@ const Stock = () => {
                     </button>
                     <button
                       type="submit"
-                      className="bg-green-800 text-white px-4 py-2 rounded"
+                      className="bg-green-600 text-white px-4 py-2 rounded"
                     >
                       Add
                     </button>
@@ -332,14 +339,13 @@ const Stock = () => {
           )}
         </div>
       </div>
-
       {/* GET Products */}
       <div>
-        <table className="w-full text-sm text-left ">
-          <thead className="text-xs border border-gray-600 text-black uppercase bg-gray-200 shadow-[inset_0_0_8px_rgba(0,0,0,0.6)]">
+        <table className="w-full text-sm text-left">
+          <thead className="text-xs border border-gray-600 uppercase">
             <tr>
-              <th className="border border-gray-300 p-2 text-left">
-                Categoty Name
+              <th className="border border-gray-300 p-2 py-4 text-left">
+                Category Name
               </th>
               <th className="border border-gray-300 p-2 text-left">fromDate</th>
               <th className="border border-gray-300 p-2 text-left">
@@ -364,42 +370,72 @@ const Stock = () => {
             </tr>
           </thead>
           <tbody>
-            {products?.map((products) => {
-              return (
-                <tr key={products.id}>
+            {products && products.length > 0 ? (
+              products?.map((product) => (
+                <tr key={product.id}>
                   <td className="border border-gray-300 p-2">
-                    {products.categoryName}
+                    {product.categoryName}
                   </td>
                   <td className="border border-gray-300 p-2">
-                    {new Date(products.fromDate).toISOString().split('T')[0]}
+                    {new Date(product.fromDate).toISOString().split("T")[0]}
                   </td>
                   <td className="border border-gray-300 p-2">
-                    {products.itemLocation}
+                    {product.itemLocation}
                   </td>
                   <td className="border border-gray-300 p-2">
-                    {products.lowStock}
+                    {product.lowStock}
                   </td>
                   <td className="border border-gray-300 p-2">
-                    {products.openStock}
+                    {product.openStock}
                   </td>
                   <td className="border border-gray-300 p-2">
-                    {products.productName}
+                    {product.productName}
                   </td>
                   <td className="border border-gray-300 p-2">
-                    {products.purchasePrice}
+                    {product.purchasePrice}
                   </td>
                   <td className="border border-gray-300 p-2">
-                    {products.salesPrice}
+                    {product.salesPrice}
                   </td>
-                  <td className="border border-gray-300 p-2">
-                    {products.unit}
-                  </td>
+                  <td className="border border-gray-300 p-2">{product.unit}</td>
                 </tr>
-              );
-            })}
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={9}
+                  className="border border-gray-300 px-4 py-2 text-center"
+                >
+                  No Products found.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: "1rem",
+        }}
+      >
+        <Button
+          variant="outlined"
+          onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
+          disabled={pageNumber === 1 || loading}
+        >
+          Previous
+        </Button>
+        <Typography>Page {pageNumber}</Typography>
+        <Button
+          variant="outlined"
+          onClick={() => setPageNumber((prev) => prev + 1)}
+          disabled={loading}
+        >
+          Next
+        </Button>
+      </Box>
     </div>
   );
 };

@@ -65,8 +65,10 @@ const UserProfile = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-lg my-2">
-      
+    <div className="w-full max-w-lg mx-auto p-6 bg-white rounded-lg shadow-lg my-6">
+      <h2 className="text-xl text-slate-800 text-center">
+        Update your profile
+      </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex flex-col">
           <label htmlFor="email" className="text-gray-600">
@@ -79,7 +81,7 @@ const UserProfile = () => {
             value={userData.email}
             onChange={handleChange}
             required
-            className="p-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
         <div className="flex flex-col">
@@ -93,7 +95,7 @@ const UserProfile = () => {
             value={userData.fullName}
             onChange={handleChange}
             required
-            className="p-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
         <div className="flex flex-col">
@@ -107,7 +109,7 @@ const UserProfile = () => {
             value={userData.sPanNo}
             onChange={handleChange}
             required
-            className="p-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
         <div className="flex flex-col">
@@ -121,7 +123,7 @@ const UserProfile = () => {
             value={userData.address}
             onChange={handleChange}
             required
-            className="p-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
         <div className="flex flex-col">
@@ -135,7 +137,7 @@ const UserProfile = () => {
             value={userData.phoneNo}
             onChange={handleChange}
             required
-            className="p-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
         <div className="flex flex-col">
@@ -149,7 +151,7 @@ const UserProfile = () => {
             value={userData.shopName}
             onChange={handleChange}
             required
-            className="p-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
         <button

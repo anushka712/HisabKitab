@@ -177,7 +177,7 @@ const SalesBill = () => {
 
   return (
     <>
-      <div className="w-full h-screen">
+      <div className="w-full h-screen md:ml-[20%] md:w-[80%]">
         <h2 className="mt-4 text-xl text-center">Sales Bill</h2>
 
         <div className="flex w-full">

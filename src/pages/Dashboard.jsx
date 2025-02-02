@@ -17,9 +17,17 @@ const Dashboard = () => {
   const navigate = useNavigate(); // Hook for navigation
 
   const links = [
-    { path: "/dashboard/chart", label: "Dashboard", icon: AiFillDashboard },
+    {
+      path: "/dashboard/main-component",
+      label: "Dashboard",
+      icon: AiFillDashboard,
+    },
     { path: "/dashboard/user", label: "Profile", icon: FaUserAlt },
-    { path: "/dashboard/billing", label: "Billing", icon: FaMoneyBillTrendUp },
+    {
+      path: "/dashboard/billing",
+      label: "Sales Bill",
+      icon: FaMoneyBillTrendUp,
+    },
     { path: "/dashboard/stock", label: "Stock", icon: RiStockFill },
     { path: "/dashboard/bills", label: "Bills", icon: FaRegNewspaper },
     {
@@ -76,14 +84,7 @@ const Dashboard = () => {
           </ul>
         </div>
 
-        {/* Main Content */}
-        <div className="md:ml-[20%] md:w-[80%]">
-          <TimeAndUser />
-          <Card />
-          <div>
-            <Outlet />
-          </div>
-        </div>
+        <Outlet />
       </div>
     </>
   );
