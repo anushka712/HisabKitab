@@ -230,6 +230,9 @@ const Customer = () => {
                   <th className="border border-gray-300 px-4 py-2 text-left font-bold">
                     Address
                   </th>
+                  <th className="border border-gray-300 px-4 py-2 text-left font-bold">
+                    Action
+                  </th>
                 </tr>
               </thead>
               <tbody>

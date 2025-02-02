@@ -4,6 +4,10 @@ const Contact = () => {
   return (
     <div className="h-[500px] mx-[10%]  mt-12">
       <div className="flex flex-col md:flex-row items-center  ">
+        <div className=" flex justify-center items-center">
+          <img src="/contact.png" alt="" className="w-1/2 h-13 " />
+        </div>
+
         <div className="flex flex-col justify-center items-center  shadow-md ">
           <h2 className="py-4 text-2xl text-gray-800 font-bold">Contact Us</h2>
           <div className="p-8">
@@ -49,10 +53,6 @@ const Contact = () => {
               />
             </form>
           </div>
-        </div>
-
-        <div className=" flex justify-end items-center">
-          <img src="/contact.png" alt="" className="w-1/2 h-13 " />
         </div>
       </div>
     </div>
