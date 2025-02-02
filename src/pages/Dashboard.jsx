@@ -28,7 +28,7 @@ const Dashboard = () => {
       label: "Sales Bill",
       icon: FaMoneyBillTrendUp,
     },
-    { path: "/dashboard/stock", label: "Stock", icon: RiStockFill },
+
     { path: "/dashboard/bills", label: "Bills", icon: FaRegNewspaper },
     {
       path: "/dashboard/wholesellers",
@@ -40,6 +40,7 @@ const Dashboard = () => {
       label: "Customers",
       icon: FaUsers,
     },
+    { path: "/dashboard/stock", label: "Stock", icon: RiStockFill },
     { path: "", label: "Logout", icon: IoMdLogOut },
   ];
 
