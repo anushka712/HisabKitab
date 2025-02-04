@@ -19,10 +19,13 @@ const UserProfile = () => {
     if (token) {
       try {
         const decodedToken = jwtDecode(token);
+        console.log(decodedToken);
         setUserId(decodedToken.nameid);
         setUserData((prevState) => ({
           ...prevState,
           email: decodedToken.email,
+          fullName: decodedToken?.unique_name[1],
+          sPanNo: decodedToken.certserialnumber,
         }));
       } catch (error) {
         toast.error("Invalid token:", error);

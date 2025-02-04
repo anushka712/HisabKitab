@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { MdDelete } from "react-icons/md";
-import { FaSearch } from "react-icons/fa";
-import { FaEdit } from "react-icons/fa";
+import { FaSearch, FaEdit } from "react-icons/fa";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Box, Button, Typography } from "@mui/material";
@@ -22,6 +21,8 @@ const Wholesellers = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
 
+
+  //GET WholeSellers
   const handlewholesellers = async () => {
     try {
       const token = localStorage.getItem("authToken");
@@ -35,48 +36,82 @@ const Wholesellers = () => {
       );
       if (response.data.statusCode === 200) {
         setWholeSellers(response.data.data);
+      } else if (response.data.statusCode === 400) {
+        toast.error(`Error: ${response.data.message}`);
       } else {
-        toast.error("Failed to fetch data", response.data.message);
+        toast.error("Failed to fetch data: " + response.data.message);
       }
     } catch (error) {
-      toast.error("Error fetching", error);
+      if (error.response) {
+        toast.error(`Error: ${error.response.data.message}`);
+      } else if (error.request) {
+        toast.error("No response from the server.");
+      } else {
+        toast.error("Error fetching data: " + error.message);
+      }
     }
   };
 
-  const addWholeSellers = async (e) => {
-    e.preventDefault();
 
-    try {
-      const token = localStorage.getItem("authToken");
-      const response = await axios.post(
-        "https://localhost:7287/api/Wholesaler",
-        {
-          panNo,
-          sellerName,
-          address,
-          phoneNo,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data.statusCode === 200) {
-        toast.success(response.data.message);
-        setIsModelOpen(false);
-        setPanNo("");
-        setSellerName("");
-        setAddress("");
-        setPhoneNo("");
-        handlewholesellers();
-      }
-    } catch (error) {
-      const errorMessage =
-        error.response?.data?.error || "An unexpected error occurred";
-      toast.error(errorMessage);
-    }
-  };
+  //POST WholeSellers
+ const addWholeSellers = async (e) => {
+   e.preventDefault();
+   try {
+     const token = localStorage.getItem("authToken");
+     const response = await axios.post(
+       "https://localhost:7287/api/Wholesaler",
+       {
+         panNo,
+         sellerName,
+         address,
+         phoneNo,
+       },
+       {
+         headers: {
+           Authorization: `Bearer ${token}`,
+         },
+       }
+     );
+
+     // Check if response status is 200 (success)
+     if (response.data.statusCode === 200) {
+       toast.success(response.data.message);
+       setIsModelOpen(false);
+       setPanNo("");
+       setSellerName("");
+       setAddress("");
+       setPhoneNo("");
+       handlewholesellers();
+     }
+     // Check for a 400 statusCode (e.g., duplicate panNo)
+     else if (response.data.statusCode === 400) {
+       toast.error(`Error: ${response.data.message}`);
+     }
+     // Handle any other non-200/400 status codes
+     else {
+       toast.error(
+         `Failed to add wholesaler: ${response.data.message || "Unknown error"}`
+       );
+     }
+   } catch (error) {
+     // Error handling for unexpected errors (e.g., network issues, server errors)
+     if (error.response) {
+       // API returned an error response (e.g., 400, 500)
+       const errorMessage =
+         error.response?.data?.message ||
+         error.response?.data?.error ||
+         "An unexpected error occurred";
+       toast.error(errorMessage);
+     } else if (error.request) {
+       // No response from the server (e.g., network error)
+       toast.error("No response from the server. Please try again later.");
+     } else {
+       // Other unexpected errors
+       toast.error("An unexpected error occurred.");
+     }
+   }
+ };
+
 
   useEffect(() => {
     handlewholesellers();
@@ -209,22 +244,10 @@ const Wholesellers = () => {
                       {wholeSeller.phoneNo}
                     </td>
                     <td className="border border-gray-300 p-2">
-                      <span className="flex cursor-pointer justify-around">
-                        {/* Edit Button */}
-                        <span className="flex items-center pr-2 group">
-                          <FaEdit className="mt-1 text-green-700" />
-                          <span className="ml-1 text-green-700 opacity-0 group-hover:opacity-100 transition-opacity">
-                            Edit
-                          </span>
-                        </span>
-                        {/* Delete Button */}
-                        <span className="flex items-center group">
-                          <MdDelete className="mt-1 text-red-600" />
-                          <span className="ml-1 text-red-600 opacity-0 group-hover:opacity-100 transition-opacity">
-                            Delete
-                          </span>
-                        </span>
-                      </span>
+                      <p className="flex gap-2">
+                        <MdDelete size={20} className="text-red-600" />
+                        <FaEdit size={20} className="text-green-700" />
+                      </p>
                     </td>
                   </tr>
                 ))

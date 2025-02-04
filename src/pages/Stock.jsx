@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Box, Typography, Button } from "@mui/material";
+import { MdDelete } from "react-icons/md";
+import { FaEdit } from "react-icons/fa";
 
 const Stock = () => {
   const [search, setSearch] = useState("");
@@ -367,6 +369,7 @@ const Stock = () => {
                 Sales Price
               </th>
               <th className="border border-gray-300 p-2 text-left">Unit</th>
+              <th className="border border-gray-300 p-2 text-left">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -398,6 +401,12 @@ const Stock = () => {
                     {product.salesPrice}
                   </td>
                   <td className="border border-gray-300 p-2">{product.unit}</td>
+                  <td className="border border-gray-300 p-2">
+                    <p className="flex gap-2">
+                      <MdDelete size={20} className="text-red-600" />
+                      <FaEdit size={20} className="text-green-700" />
+                    </p>
+                  </td>
                 </tr>
               ))
             ) : (

@@ -3,7 +3,7 @@ import React from "react";
 const Featured = () => {
   return (
     <div
-      className="mx-[10%] sm:mt-24 flex flex-col md:flex-row justify-center items-center gap-10 pb-10"
+      className="mx-[10%] sm:mt-24 flex flex-col md:flex-row justify-center items-center gap-10 pb-10 bg-green-50"
     >
       <div className="ml-4 rounded-lg  w-1/2">
         <img src="/cover.jpg" alt="" className="w-full h-full  rounded-lg" />

@@ -48,7 +48,7 @@ function Login() {
         error.response.data.message &&
         error.response.data.message
       ) {
-        toast.error(error.response.data.message);
+        toast.error(error.response.data.error);
       } else {
         toast.error("An error occured!");
       }
@@ -78,7 +78,7 @@ function Login() {
             />
             <p
               onClick={togglePasswordVisibility}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2  text-black"
+              className="absolute right-3 top-1/3 transform -translate-y-1/2  text-black "
             >
               {isPasswordVisible ? <FaEyeSlash /> : <FaEye />}
             </p>

@@ -217,7 +217,7 @@ const SalesBill = () => {
                         key={customer.customerId}
                         value={customer.customerId}
                       >
-                        {customer.customerName} (ID: {customer.customerId}){" "}
+                        {customer.customerName} 
                       </option>
                     ))}
                   </select>
@@ -225,7 +225,7 @@ const SalesBill = () => {
 
                 {/* Issue New Bill Button */}
                 <button
-                  className="bg-green-700 text-white px-2 py-1 rounded-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  className="bg-green-600 text-white px-2 py-1 rounded-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
                   onClick={() => {
                     setIsModelOpen(true);
                     setIsButtonDisabled(true);
@@ -344,7 +344,7 @@ const SalesBill = () => {
                         <button
                           type="button"
                           onClick={handleAddProduct}
-                          className="bg-green-800 text-white px-4 py-2 rounded mt-4"
+                          className="bg-green-600 text-white px-4 py-2 rounded mt-4"
                         >
                           Add Another Product
                         </button>
@@ -397,7 +397,7 @@ const SalesBill = () => {
                   </button>
                   <button
                     type="submit"
-                    className="bg-green-800 text-white px-4 py-2 rounded"
+                    className="bg-green-600 text-white px-4 py-2 rounded"
                   >
                     Submit Bill
                   </button>

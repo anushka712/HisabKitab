@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 import axios from "axios";
 import {
   Box,
@@ -49,7 +50,6 @@ const Customer = () => {
           },
         }
       );
-
       toast.success("Customer data submitted successfully!");
       setIsModelOpen(false);
     } catch (error) {
@@ -71,13 +71,29 @@ const Customer = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      // console.log("Response Data:", response?.data?.data[0]?.customerName);
       setCustomers(response?.data?.data);
     } catch (error) {
       toast.error("Error fetching customers:", error.response || error.message);
       if (error.response?.status === 400) {
         toast.error("Bad Request: Check query parameters or data format.");
       }
+    }
+  };
+
+  //DELETE Customer
+  const deleteCustomer = async (customerId) => {
+    try {
+      const token = localStorage.getItem("authToken");
+      await axios.delete(`https://localhost:7287/api/Customer/${customerId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setCustomers(
+        customers.filter((customer) => customer.customerId !== customerId)
+      );
+    } catch (error) {
+      console.error("Error deleting customer:", error);
     }
   };
 
@@ -161,6 +177,19 @@ const Customer = () => {
                         />
                       </Grid>
 
+                      <Grid item xs={12}>
+                        <TextField
+                          fullWidth
+                          label="PAN N0"
+                          variant="outlined"
+                          {...register("cPanNo", {
+                            required: "PAN Number is required",
+                          })}
+                          error={!!errors.cPanNo}
+                          helperText={errors.cPanNo?.message}
+                        />
+                      </Grid>
+
                       {/* Email */}
                       <Grid item xs={12}>
                         <TextField
@@ -239,7 +268,7 @@ const Customer = () => {
                 {customers.length > 0 ? (
                   customers.map((customer) => (
                     <tr
-                      key={customer.id}
+                      key={customer.customerId}
                       className="odd:bg-white even:bg-gray-100"
                     >
                       <td className="border border-gray-300 px-4 py-2">
@@ -253,6 +282,23 @@ const Customer = () => {
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
                         {customer.address}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        <p className="flex gap-2">
+                          <MdDelete
+                            size={20}
+                            className="text-red-600"
+                            onClick={() => {
+                              console.log(
+                                "Deleting customer with ID:",
+                                customer.customerId
+                              );
+                              deleteCustomer(customer.customerId);
+                            }}
+                          />
+
+                          <FaEdit size={20} className="text-green-700" />
+                        </p>
                       </td>
                     </tr>
                   ))
