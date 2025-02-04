@@ -9,16 +9,10 @@ import {
   TextField,
   Button,
   Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   Grid,
 } from "@mui/material";
 import { toast } from "react-toastify";
+import Loader from "../components/Loader";
 
 const Customer = () => {
   const [search, setSearch] = useState("");
@@ -39,6 +33,7 @@ const Customer = () => {
 
   //POST customers
   const postCustomers = async (data) => {
+    setLoading(true);
     try {
       const token = localStorage.getItem("authToken");
       const response = await axios.post(
@@ -52,6 +47,7 @@ const Customer = () => {
       );
       toast.success("Customer data submitted successfully!");
       setIsModelOpen(false);
+      setLoading(false);
     } catch (error) {
       toast.error("An error occurred while submitting the form.", error);
     }
@@ -59,6 +55,7 @@ const Customer = () => {
 
   //GET Customers
   const fetchCustomers = async (pageNumber, pageSize, searchQuery) => {
+    setLoading(true);
     try {
       const token = localStorage.getItem("authToken");
       const response = await axios.get("https://localhost:7287/api/Customer", {
@@ -72,6 +69,7 @@ const Customer = () => {
         },
       });
       setCustomers(response?.data?.data);
+      setLoading(false);
     } catch (error) {
       toast.error("Error fetching customers:", error.response || error.message);
       if (error.response?.status === 400) {
@@ -82,6 +80,7 @@ const Customer = () => {
 
   //DELETE Customer
   const deleteCustomer = async (customerId) => {
+    setLoading(true);
     try {
       const token = localStorage.getItem("authToken");
       await axios.delete(`https://localhost:7287/api/Customer/${customerId}`, {
@@ -92,6 +91,7 @@ const Customer = () => {
       setCustomers(
         customers.filter((customer) => customer.customerId !== customerId)
       );
+      setLoading(false);
     } catch (error) {
       console.error("Error deleting customer:", error);
     }
@@ -103,6 +103,13 @@ const Customer = () => {
 
   return (
     <div className="md:ml-[20%] md:w-[80%] ">
+      <div className="p-4">
+        {loading ? (
+          <Loader />
+        ) : (
+          <p className="text-lg font-semibold"></p>
+        )}
+      </div>
       <Container>
         <Box>
           <h2 className="mt-8 text-2xl text-center font-bold">Customers</h2>
@@ -287,17 +294,13 @@ const Customer = () => {
                         <p className="flex gap-2">
                           <MdDelete
                             size={20}
-                            className="text-red-600"
+                            className="text-red-600 cursor-pointer"
                             onClick={() => {
-                              console.log(
-                                "Deleting customer with ID:",
-                                customer.customerId
-                              );
                               deleteCustomer(customer.customerId);
                             }}
                           />
 
-                          <FaEdit size={20} className="text-green-700" />
+                          <FaEdit size={20} className="text-green-700 cursor-pointer" />
                         </p>
                       </td>
                     </tr>

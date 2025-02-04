@@ -4,6 +4,7 @@ import { FaSearch, FaEdit } from "react-icons/fa";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Box, Button, Typography } from "@mui/material";
+import Loader from "../components/Loader";
 
 const Wholesellers = () => {
   const [search, setSearch] = useState("");
@@ -21,9 +22,9 @@ const Wholesellers = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
 
-
   //GET WholeSellers
   const handlewholesellers = async () => {
+    setLoading(true);
     try {
       const token = localStorage.getItem("authToken");
       const response = await axios.get(
@@ -35,6 +36,7 @@ const Wholesellers = () => {
         }
       );
       if (response.data.statusCode === 200) {
+        setLoading(false);
         setWholeSellers(response.data.data);
       } else if (response.data.statusCode === 400) {
         toast.error(`Error: ${response.data.message}`);
@@ -52,10 +54,10 @@ const Wholesellers = () => {
     }
   };
 
-
   //POST WholeSellers
  const addWholeSellers = async (e) => {
    e.preventDefault();
+   setLoading(true); 
    try {
      const token = localStorage.getItem("authToken");
      const response = await axios.post(
@@ -73,7 +75,6 @@ const Wholesellers = () => {
        }
      );
 
-     // Check if response status is 200 (success)
      if (response.data.statusCode === 200) {
        toast.success(response.data.message);
        setIsModelOpen(false);
@@ -81,34 +82,23 @@ const Wholesellers = () => {
        setSellerName("");
        setAddress("");
        setPhoneNo("");
-       handlewholesellers();
-     }
-     // Check for a 400 statusCode (e.g., duplicate panNo)
-     else if (response.data.statusCode === 400) {
-       toast.error(`Error: ${response.data.message}`);
-     }
-     // Handle any other non-200/400 status codes
-     else {
-       toast.error(
-         `Failed to add wholesaler: ${response.data.message || "Unknown error"}`
-       );
+     } else {
+       toast.error(`Error: ${response.data.message || "Unknown error"}`);
      }
    } catch (error) {
-     // Error handling for unexpected errors (e.g., network issues, server errors)
      if (error.response) {
-       // API returned an error response (e.g., 400, 500)
        const errorMessage =
          error.response?.data?.message ||
          error.response?.data?.error ||
          "An unexpected error occurred";
        toast.error(errorMessage);
      } else if (error.request) {
-       // No response from the server (e.g., network error)
        toast.error("No response from the server. Please try again later.");
      } else {
-       // Other unexpected errors
        toast.error("An unexpected error occurred.");
      }
+   } finally {
+     setLoading(false); 
    }
  };
 
@@ -121,6 +111,9 @@ const Wholesellers = () => {
     <>
       {/* main div for wholesellers */}
       <div className="md:ml-[20%] md:w-[80%] px-8">
+        <div className="p-4">
+          {loading ? <Loader /> : <p className="text-lg font-semibold"></p>}
+        </div>
         <h2 className="mt-8 text-2xl text-center font-bold">Wholesellers</h2>
         <div className=" flex justify-between">
           <div className="flex items-center justify-between border border-gray-300 rounded-md px-2 w-64 my-2 ">
@@ -245,8 +238,8 @@ const Wholesellers = () => {
                     </td>
                     <td className="border border-gray-300 p-2">
                       <p className="flex gap-2">
-                        <MdDelete size={20} className="text-red-600" />
-                        <FaEdit size={20} className="text-green-700" />
+                        <MdDelete size={20} className="text-red-600 cursor-pointer" />
+                        <FaEdit size={20} className="text-green-700 cursor-pointer" />
                       </p>
                     </td>
                   </tr>

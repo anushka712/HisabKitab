@@ -6,6 +6,7 @@ import axios from "axios";
 import { Box, Typography, Button } from "@mui/material";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
+import Loader from "../components/Loader";
 
 const Stock = () => {
   const [search, setSearch] = useState("");
@@ -15,6 +16,7 @@ const Stock = () => {
   const [categories, setCategories] = useState("");
 
   const [categoryName, setCategoryName] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -32,7 +34,6 @@ const Stock = () => {
 
   const [pageSize, setPageSize] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
-  const [loading, setLoading] = useState(false);
   const [pageNumber, setPageNumber] = useState(1);
 
   //Add Category
@@ -143,6 +144,7 @@ const Stock = () => {
 
   //Get Product
   const getProduct = async (pageNumber, pageSize, searchQuery) => {
+    setLoading(true);
     try {
       const token = localStorage.getItem("authToken");
       const response = await axios.get("https://localhost:7287/api/Product", {
@@ -162,6 +164,8 @@ const Stock = () => {
       if (error.response?.status === 400) {
         toast.error("Bad Request: Check query parameters or data format.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -172,6 +176,9 @@ const Stock = () => {
 
   return (
     <div className="md:ml-[20%] md:w-[80%] px-8 mt-4">
+      <div className="p-4">
+        {loading ? <Loader /> : <p className="text-lg font-semibold"></p>}
+      </div>
       <h2 className="mt-8 text-2xl text-center font-bold">Stock</h2>
       <div className="flex justify-between ">
         <div className="flex items-center border border-gray-300 rounded-md px-2 w-64 my-2">
