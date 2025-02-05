@@ -1,8 +1,11 @@
 import React from "react";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import { Grid, Box } from "@mui/material";
+import { jwtDecode } from "jwt-decode";
 
 export const TimeAndUser = () => {
+   const token = localStorage.getItem("authToken");
+   const decodedToken = jwtDecode(token);
   const [time, setTime] = React.useState("");
   const [greeting, setGreeting] = React.useState("Good Morning");
 
@@ -61,7 +64,7 @@ export const TimeAndUser = () => {
             <LightModeIcon sx={{ color: "yellow" }} />
           </Box>
           <Box>
-            {greeting}, {"Prerana"}! <br />
+            {greeting}, {decodedToken?.unique_name[1]}! <br />
             Welcome back to the dashboard
           </Box>
         </Box>

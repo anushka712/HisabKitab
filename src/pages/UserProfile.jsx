@@ -2,11 +2,15 @@ import React, { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Loader from "../components/Loader";
 
 const UserProfile = () => {
+  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState("");
+
   const [userData, setUserData] = useState({
     email: "",
-    fullName: "",
+    fullname: "",
     sPanNo: "",
     address: "",
     phoneNo: "",
@@ -14,24 +18,39 @@ const UserProfile = () => {
   });
   const [userId, setUserId] = useState(null);
   const token = localStorage.getItem("authToken");
+  const decodedToken = jwtDecode(token);
+  const id = decodedToken.nameid;
 
-  useEffect(() => {
-    if (token) {
-      try {
-        const decodedToken = jwtDecode(token);
-        console.log(decodedToken);
-        setUserId(decodedToken.nameid);
-        setUserData((prevState) => ({
-          ...prevState,
-          email: decodedToken.email,
-          fullName: decodedToken?.unique_name[1],
-          sPanNo: decodedToken.certserialnumber,
-        }));
-      } catch (error) {
-        toast.error("Invalid token:", error);
+  const fetchUser = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await axios.get(
+        `https://localhost:7287/api/Auth/Profile/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const userDataFromAPI = response?.data?.data[0];
+      setUserData({
+        email: userDataFromAPI.email || "",
+        fullname: userDataFromAPI.fullname || "",
+        sPanNo: userDataFromAPI.sPanNo || "",
+        address: userDataFromAPI.address || "",
+        phoneNo: userDataFromAPI.phoneNo || "",
+        shopName: userDataFromAPI.shopName || "",
+      });
+    } catch (error) {
+      toast.error("Error fetching customers:", error.response || error.message);
+      if (error.response?.status === 400) {
+        toast.error("Bad Request: Check query parameters or data format.");
       }
+    } finally {
+      setLoading(false);
     }
-  }, [token]);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -44,14 +63,15 @@ const UserProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!userId) {
+    if (!id) {
       toast.error("User ID not found.");
       return;
     }
 
     try {
+      setLoading(true);
       const response = await axios.patch(
-        `https://localhost:7287/api/Auth/Profile/${userId}`,
+        `https://localhost:7287/api/Auth/Profile/${id}`,
         userData,
         {
           headers: {
@@ -60,15 +80,24 @@ const UserProfile = () => {
           },
         }
       );
-
       toast.log("User updated successfully:", response.message);
+      fetchUser();
     } catch (error) {
       toast.error("Error updating profile:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
   return (
     <div className="w-full max-w-lg mx-auto p-6 bg-white rounded-lg shadow-lg my-6">
+      <div className="p-4">
+        {loading ? <Loader /> : <p className="text-lg font-semibold"></p>}
+      </div>
       <h2 className="text-xl text-slate-800 text-center">
         Update your profile
       </h2>
@@ -93,9 +122,9 @@ const UserProfile = () => {
           </label>
           <input
             type="text"
-            id="fullName"
-            name="fullName"
-            value={userData.fullName}
+            id="fullname"
+            name="fullname"
+            value={userData.fullname}
             onChange={handleChange}
             required
             className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"

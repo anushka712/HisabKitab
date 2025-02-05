@@ -4,9 +4,12 @@ import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Loader from "../components/Loader";
+import { jwtDecode } from "jwt-decode";
 
 const SalesBill = () => {
   const [isModelOpen, setIsModelOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [billNo, setBillNo] = useState("");
   const [billDate, setBillDate] = useState("");
@@ -15,6 +18,12 @@ const SalesBill = () => {
   const [payMode, setPayMode] = useState("");
   const [receivedAmount, setReceivedAmount] = useState("");
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
+
+  const token = localStorage.getItem("authToken");
+  const decodedToken = jwtDecode(token);
+  const id = decodedToken.nameid;
+
+  const [salesId, setSalesId] = useState(null);
 
   const [availableProducts, setAvailableProducts] = useState([]);
   const [customers, setCustomers] = useState([]);
@@ -32,6 +41,7 @@ const SalesBill = () => {
 
   //GET Customers
   const fetchCustomers = async (pageNumber, pageSize, searchQuery) => {
+    setLoading(true);
     try {
       const token = localStorage.getItem("authToken");
       const response = await axios.get("https://localhost:7287/api/Customer", {
@@ -44,18 +54,20 @@ const SalesBill = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      // console.log("Response Data:", response?.data?.data[0]?.customerName);
       setCustomers(response?.data?.data);
     } catch (error) {
       toast.error("Error fetching customers:", error.response || error.message);
       if (error.response?.status === 400) {
         toast.error("Bad Request: Check query parameters or data format.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   //Get Products
   const fetchProducts = async (pageNumber, pageSize, searchQuery) => {
+    setLoading(true);
     try {
       const token = localStorage.getItem("authToken");
       const response = await axios.get("https://localhost:7287/api/Product", {
@@ -72,6 +84,8 @@ const SalesBill = () => {
     } catch (error) {
       console.error(error);
       toast.error("Failed to load products");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -103,7 +117,10 @@ const SalesBill = () => {
     ]);
   };
 
+
+  //Add Bill
   const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
     if (
       !billNo ||
@@ -118,7 +135,6 @@ const SalesBill = () => {
       toast.error("All fields are required.");
       return;
     }
-
     try {
       const token = localStorage.getItem("authToken");
 
@@ -151,6 +167,9 @@ const SalesBill = () => {
       );
 
       if (response.status === 200) {
+        const salesId = response?.data?.data?.salesId;
+        setSalesId(salesId);
+        console.log(salesId);
         toast.success("Bill added successfully.");
         setBillNo("");
         setBillDate("");
@@ -171,13 +190,72 @@ const SalesBill = () => {
         ]);
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "An error occurred!");
+      toast.error(error.response?.data?.message || "An error on calling APi!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  //GENERATE SALES BILL
+  const generateBillPdf = async () => {
+    if (!salesId) {
+      toast.error("Sales Id Not Found!");
+    }
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await axios.get(
+        `https://localhost:7287/api/GenerateSalesBillQuery/${salesId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          responseType: "blob",
+        }
+      );
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const contentDisposition = response.headers["content-disposition"];
+      let fileName = "Sales_Bill.pdf";
+
+      if (contentDisposition) {
+        const match = contentDisposition.match(
+          /filename\*?=['"]?(?:UTF-8'')?([^;'"\n]+)/
+        );
+        if (match && match[1]) {
+          fileName = decodeURIComponent(match[1]);
+        }
+      }
+
+      const url = URL.createObjectURL(blob);
+
+      // Create a link element to trigger the download
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+
+      // Cleanup
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      toast.success("PDF downloaded successfully!");
+    } catch (error) {
+      toast.error("Error fetching bill:", error.response || error.message);
+      if (error.response?.status === 400) {
+        toast.error("Bad Request: Check query parameters or data format.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
       <div className="w-full h-screen md:ml-[20%] md:w-[80%]">
+        <div className="p-4">
+          {loading ? <Loader /> : <p className="text-lg font-semibold"></p>}
+        </div>
         <h2 className="mt-4 text-xl text-center">Sales Bill</h2>
 
         <div className="flex w-full">
@@ -208,7 +286,6 @@ const SalesBill = () => {
                     value={selectedCustomerId}
                     onChange={(e) => {
                       setSelectedCustomerId(e.target.value);
-                      console.log("Selected Customer ID:", e.target.value);
                     }}
                   >
                     <option value="">Select a customer</option>
@@ -217,7 +294,7 @@ const SalesBill = () => {
                         key={customer.customerId}
                         value={customer.customerId}
                       >
-                        {customer.customerName} 
+                        {customer.customerName}
                       </option>
                     ))}
                   </select>
@@ -403,6 +480,19 @@ const SalesBill = () => {
                   </button>
                 </div>
               </form>
+              <div className="flex justify-end mt-2">
+                <button
+                  onClick={generateBillPdf}
+                  disabled={!salesId}
+                  className={`px-2 py-1 rounded ${
+                    salesId
+                      ? "bg-green-600 text-white"
+                      : "bg-gray-400 text-white"
+                  }`}
+                >
+                  Download Sales Bill
+                </button>
+              </div>
             </div>
           </div>
         </div>

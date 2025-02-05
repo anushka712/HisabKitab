@@ -2,6 +2,7 @@ import React from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { LineChart } from "@mui/x-charts/LineChart";
 
+
 const Chart = () => {
   return (
     <div className="pl-2 flex">
