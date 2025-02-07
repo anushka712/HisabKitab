@@ -9,8 +9,7 @@ import { toast } from "react-toastify";
 import { FaUserGroup } from "react-icons/fa6";
 import { FaUserAlt } from "react-icons/fa";
 import { FaUsers } from "react-icons/fa";
-import { TimeAndUser } from "../components/TimeAndUser";
-import { Card } from "../components/Cards";
+import { TbCategory } from "react-icons/tb";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -35,12 +34,18 @@ const Dashboard = () => {
       label: "Wholesellers",
       icon: FaUserGroup,
     },
+
     {
       path: "/dashboard/customers",
       label: "Customers",
       icon: FaUsers,
     },
     { path: "/dashboard/stock", label: "Stock", icon: RiStockFill },
+    {
+      path: "/dashboard/category",
+      label: "Category",
+      icon: TbCategory,
+    },
     { path: "", label: "Logout", icon: IoMdLogOut },
   ];
 

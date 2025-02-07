@@ -3,8 +3,10 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Loader from "../components/Loader";
 
 function Login() {
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -16,6 +18,7 @@ function Login() {
   };
 
   const handleLogin = async (e) => {
+    setLoading(true);
     e.preventDefault();
     if (!email || !password) {
       toast.error("All fields required");
@@ -52,11 +55,16 @@ function Login() {
       } else {
         toast.error("An error occured!");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className=" h-screen flex justify-center items-center p-6">
+      <div className="p-4">
+        {loading ? <Loader /> : <p className="text-lg font-semibold"></p>}
+      </div>
       <div className="bg-white shadow-2xl px-16 py-10  rounded-xl">
         <h2 className="text-green-600 text-xl mb-2 text-center">
           Welcome to HisabKitab

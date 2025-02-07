@@ -3,8 +3,10 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Loader from "../components/Loader";
 
 const Signup = () => {
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setfullName] = useState("");
@@ -16,9 +18,10 @@ const Signup = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
-  const navigate = useNavigate(); // to navigate in between routes
+  const navigate = useNavigate();
 
   const handleRegister = async (e) => {
+    setLoading(true);
     e.preventDefault();
 
     if (!email || !password || !fullName || !sPanNo) {
@@ -68,11 +71,16 @@ const Signup = () => {
       } else {
         toast.error("Frontend Error");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className=" h-screen flex justify-center items-center p-6">
+      <div className="p-4">
+        {loading ? <Loader /> : <p className="text-lg font-semibold"></p>}
+      </div>
       <div className="bg-white shadow-2xl px-16 py-10  rounded-xl">
         <h2 className="text-green-600 text-xl mb-2 text-center ">
           Welcome to HisabKitab

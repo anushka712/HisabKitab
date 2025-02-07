@@ -10,7 +10,7 @@ import SalesBill from "./pages/SalesBill";
 import Stock from "./pages/Stock";
 import Signup from "./pages/Signup";
 import Bills from "./pages/Bills";
-import Chart from "./pages/Chart";
+import Category from "./pages/Category";
 import Home from "./pages/Home";
 import Contact from "./components/Contact";
 import { ToastContainer } from "react-toastify";
@@ -41,6 +41,7 @@ function App() {
             path="/dashboard/wholesellers"
             element={<Wholesellers />}
           ></Route>
+          <Route path="/dashboard/category" element={<Category />}></Route>
         </Route>
         <Route path="/signup" element={<Signup />}></Route>
         <Route path="/contact" element={<Contact />}></Route>

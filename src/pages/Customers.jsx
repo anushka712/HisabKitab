@@ -83,17 +83,21 @@ const Customer = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("authToken");
-      await axios.delete(`https://localhost:7287/api/Customer/${customerId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.delete(
+        `https://localhost:7287/api/Customer/${customerId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success(response?.data?.message);
       setCustomers(
         customers.filter((customer) => customer.customerId !== customerId)
       );
       setLoading(false);
     } catch (error) {
-      console.error("Error deleting customer:", error);
+      toast.error("Error deleting customer:", error);
     }
   };
 
@@ -104,11 +108,7 @@ const Customer = () => {
   return (
     <div className="md:ml-[20%] md:w-[80%] ">
       <div className="p-4">
-        {loading ? (
-          <Loader />
-        ) : (
-          <p className="text-lg font-semibold"></p>
-        )}
+        {loading ? <Loader /> : <p className="text-lg font-semibold"></p>}
       </div>
       <Container>
         <Box>
@@ -300,7 +300,10 @@ const Customer = () => {
                             }}
                           />
 
-                          <FaEdit size={20} className="text-green-700 cursor-pointer" />
+                          <FaEdit
+                            size={20}
+                            className="text-green-700 cursor-pointer"
+                          />
                         </p>
                       </td>
                     </tr>
