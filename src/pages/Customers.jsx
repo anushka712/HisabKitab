@@ -13,8 +13,12 @@ import {
 } from "@mui/material";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
+import CustomerEdit from "../Edit/CustomerEdit";
 
 const Customer = () => {
+  const [openQR, setOpenQR] = useState(false);
+  const [selectedCustomerId, setSelectedCustomerId] = useState(null);
+
   const [search, setSearch] = useState("");
   const [customers, setCustomers] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
@@ -75,6 +79,8 @@ const Customer = () => {
       if (error.response?.status === 400) {
         toast.error("Bad Request: Check query parameters or data format.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -105,11 +111,17 @@ const Customer = () => {
     fetchCustomers();
   }, [pageNumber, pageSize, searchQuery]);
 
+  const handleRowClick = (customerId) => {
+    setSelectedCustomerId(customerId);
+    setOpenQR(true);
+  };
+
   return (
     <div className="md:ml-[20%] md:w-[80%] ">
       <div className="p-4">
         {loading ? <Loader /> : <p className="text-lg font-semibold"></p>}
       </div>
+
       <Container>
         <Box>
           <h2 className="mt-8 text-2xl text-center font-bold">Customers</h2>
@@ -138,115 +150,106 @@ const Customer = () => {
 
           {isModalOpen && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-              <Container maxWidth="sm">
-                <Box
-                  sx={{
-                    padding: "2rem",
-                    backgroundColor: "#f9f9f9",
-                    borderRadius: "8px",
-                    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
-                  }}
-                >
-                  <Typography variant="h4" gutterBottom textAlign="center">
-                    Customer Form
-                  </Typography>
-                  <form onSubmit={handleSubmit(postCustomers)}>
-                    <Grid container spacing={2}>
-                      {/* Customer Name */}
-                      <Grid item xs={12}>
-                        <TextField
-                          fullWidth
-                          label="Customer Name"
-                          variant="outlined"
-                          {...register("customerName", {
-                            required: "Customer Name is required",
-                          })}
-                          error={!!errors.customerName}
-                          helperText={errors.customerName?.message}
-                        />
-                      </Grid>
+              <div className="bg-white py-6 px-12 rounded-lg shadow-lg w-96">
+                <h2 className="text-xl font-bold text-center mb-4">
+                  Add New Customer
+                </h2>
+                <form onSubmit={handleSubmit(postCustomers)}>
+                  <input
+                    type="text"
+                    placeholder="Customer Name"
+                    className="w-full border border-gray-300 px-3 py-1 rounded mb-2"
+                    {...register("customerName", {
+                      required: "Customer Name is required",
+                    })}
+                  />
+                  {errors.customerName && (
+                    <p className="text-red-500 text-sm">
+                      {errors.customerName.message}
+                    </p>
+                  )}
 
-                      {/* Phone Number */}
-                      <Grid item xs={12}>
-                        <TextField
-                          fullWidth
-                          label="Phone Number"
-                          variant="outlined"
-                          {...register("phoneNumber", {
-                            required: "Phone Number is required",
-                            pattern: {
-                              value: /^[0-9]{10}$/,
-                              message: "Phone Number must be 10 digits",
-                            },
-                          })}
-                          error={!!errors.phoneNumber}
-                          helperText={errors.phoneNumber?.message}
-                        />
-                      </Grid>
+                  <input
+                    type="text"
+                    placeholder="Phone Number"
+                    className="w-full border border-gray-300 px-3 py-1 rounded mb-2"
+                    {...register("phoneNumber", {
+                      required: "Phone Number is required",
+                      pattern: {
+                        value: /^[0-9]{10}$/,
+                        message: "Phone Number must be 10 digits",
+                      },
+                    })}
+                  />
+                  {errors.phoneNumber && (
+                    <p className="text-red-500 text-sm">
+                      {errors.phoneNumber.message}
+                    </p>
+                  )}
 
-                      <Grid item xs={12}>
-                        <TextField
-                          fullWidth
-                          label="PAN N0"
-                          variant="outlined"
-                          {...register("cPanNo", {
-                            required: "PAN Number is required",
-                          })}
-                          error={!!errors.cPanNo}
-                          helperText={errors.cPanNo?.message}
-                        />
-                      </Grid>
+                  <input
+                    type="text"
+                    placeholder="PAN No"
+                    className="w-full border border-gray-300 px-3 py-1 rounded mb-2"
+                    {...register("cPanNo", {
+                      required: "PAN Number is required",
+                    })}
+                  />
+                  {errors.cPanNo && (
+                    <p className="text-red-500 text-sm">
+                      {errors.cPanNo.message}
+                    </p>
+                  )}
 
-                      {/* Email */}
-                      <Grid item xs={12}>
-                        <TextField
-                          fullWidth
-                          label="Email"
-                          variant="outlined"
-                          {...register("email", {
-                            required: "Email is required",
-                            pattern: {
-                              value: /^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/,
-                              message: "Enter a valid email address",
-                            },
-                          })}
-                          error={!!errors.email}
-                          helperText={errors.email?.message}
-                        />
-                      </Grid>
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    className="w-full border border-gray-300 px-3 py-1 rounded mb-2"
+                    {...register("email", {
+                      required: "Email is required",
+                      pattern: {
+                        value: /^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/,
+                        message: "Enter a valid email address",
+                      },
+                    })}
+                  />
+                  {errors.email && (
+                    <p className="text-red-500 text-sm">
+                      {errors.email.message}
+                    </p>
+                  )}
 
-                      {/* Address */}
-                      <Grid item xs={12}>
-                        <TextField
-                          fullWidth
-                          label="Address"
-                          variant="outlined"
-                          multiline
-                          rows={4}
-                          {...register("address", {
-                            required: "Address is required",
-                          })}
-                          error={!!errors.address}
-                          helperText={errors.address?.message}
-                        />
-                      </Grid>
-                    </Grid>
+                  <input
+                    placeholder="Address"
+                    className="w-full border border-gray-300 px-3 py-1 rounded mb-2"
+                    rows={4}
+                    {...register("address", {
+                      required: "Address is required",
+                    })}
+                  />
+                  {errors.address && (
+                    <p className="text-red-500 text-sm">
+                      {errors.address.message}
+                    </p>
+                  )}
 
-                    <Box sx={{ textAlign: "center", marginTop: "1.5rem" }}>
-                      <Button variant="contained" color="primary" type="submit">
-                        Submit
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="danger"
-                        onClick={() => setIsModelOpen(false)}
-                      >
-                        Cancel
-                      </Button>
-                    </Box>
-                  </form>
-                </Box>
-              </Container>
+                  <div className="flex justify-end space-x-2 mt-4">
+                    <button
+                      type="button"
+                      onClick={() => setIsModelOpen(false)}
+                      className="bg-red-500 text-white px-4 py-2 rounded"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="bg-green-600 text-white px-4 py-2 rounded"
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
           )}
 
@@ -291,20 +294,17 @@ const Customer = () => {
                         {customer.address}
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
-                        <p className="flex gap-2">
-                          <MdDelete
-                            size={20}
-                            className="text-red-600 cursor-pointer"
-                            onClick={() => {
-                              deleteCustomer(customer.customerId);
-                            }}
-                          />
-
-                          <FaEdit
-                            size={20}
-                            className="text-green-700 cursor-pointer"
-                          />
-                        </p>
+                        <div className="flex items-center gap-2">
+                          <div>
+                            <MdDelete
+                              size={20}
+                              className="text-red-600 cursor-pointer"
+                              onClick={() => {
+                                deleteCustomer(customer.customerId);
+                              }}
+                            />
+                          </div>
+                        </div>
                       </td>
                     </tr>
                   ))

@@ -15,7 +15,10 @@ const Bills = () => {
 
   const [bills, setBills] = useState([]);
 
-  const [billDate, setBillDate] = useState("");
+  const [billDate, setBillDate] = useState(()=>{
+    const today = new Date().toISOString().split("T")[0];
+    return today;
+  });
   const [panNo, setPanNo] = useState("");
   const [billNo, setBillNO] = useState("");
   const [isPaid, setIsPaid] = useState(false);
@@ -160,7 +163,7 @@ const Bills = () => {
       {/* Bill Form */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-12 rounded shadow-lg">
+          <div className="bg-white py-6 px-12 rounded shadow-lg w-96">
             <h2 className="text-lg font-bold mb-4 text-center">
               Add a New Bill
             </h2>
@@ -171,9 +174,9 @@ const Bills = () => {
                 <input
                   type="date"
                   placeholder="Enter Bill Date"
-                  onChange={(e) => setBillDate(e.target.value)}
                   value={billDate}
-                  className="border border-gray-300 rounded px-3 py-1  mb-2"
+                  onChange={(e) => setBillDate(e.target.value)}
+                  className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
                   required
                 />
                 <br />
@@ -182,7 +185,7 @@ const Bills = () => {
                   placeholder="Enter Pan Number"
                   value={panNo}
                   onChange={(e) => setPanNo(e.target.value)}
-                  className="border border-gray-300 rounded px-3 py-1  mb-2"
+                  className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
                   required
                 />
                 <br />
@@ -191,14 +194,14 @@ const Bills = () => {
                   placeholder="Enter Bill Number"
                   value={billNo}
                   onChange={(e) => setBillNO(e.target.value)}
-                  className="border border-gray-300 rounded px-3 py-1  mb-2"
+                  className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
                   required
                 />
                 <br />
                 <select
                   value={isPaid.toString()}
                   onChange={(e) => setIsPaid(e.target.value === "true")}
-                  className="border border-gray-300 rounded px-3 py-1  mb-2"
+                  className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
                 >
                   <option value="true">Paid</option>
                   <option value="false">Unpaid</option>
@@ -209,7 +212,7 @@ const Bills = () => {
                     placeholder="Enter Paid Amount"
                     value={paidAmount}
                     onChange={(e) => setPaidAmount(e.target.value)}
-                    className="border border-gray-300 rounded px-3 py-1  mb-2"
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
                     required
                   />
                 )}
@@ -219,7 +222,7 @@ const Bills = () => {
                   placeholder="Enter Total Amount"
                   value={totalAmount}
                   onChange={(e) => setTotalAmount(e.target.value)}
-                  className="border border-gray-300 rounded px-3 py-1 mb-2"
+                  className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
                   required
                 />
                 <br />
@@ -229,9 +232,9 @@ const Bills = () => {
                   id="imageUpload"
                   accept="image/*"
                   onChange={(e) => setSelectedImage(e.target.files[0])}
-                  className="border border-gray-300 rounded px-3 py-1  mb-2"
+                  className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
                 />
-                <div className="flex justify-end space-x-2">
+                <div className="flex justify-end space-x-2 mt-4">
                   <button
                     onClick={() => setIsModelOpen(false)}
                     className="bg-red-500 px-4 py-2 rounded text-white"

@@ -12,7 +12,10 @@ const SalesBill = () => {
   const [loading, setLoading] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [billNo, setBillNo] = useState("");
-  const [billDate, setBillDate] = useState("");
+  const [billDate, setBillDate] = useState(() => {
+    const today = new Date().toISOString().split("T")[0];
+    return today;
+  });
   const [totalAmount, setTotalAmount] = useState("");
   const [totalQuantity, setTotalQuantity] = useState("");
   const [payMode, setPayMode] = useState("");
@@ -116,7 +119,6 @@ const SalesBill = () => {
       },
     ]);
   };
-
 
   //Add Bill
   const handleSubmit = async (e) => {

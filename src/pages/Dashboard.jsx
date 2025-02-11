@@ -28,7 +28,7 @@ const Dashboard = () => {
       icon: FaMoneyBillTrendUp,
     },
 
-    { path: "/dashboard/bills", label: "Bills", icon: FaRegNewspaper },
+    { path: "/dashboard/bills", label: "Save Bills", icon: FaRegNewspaper },
     {
       path: "/dashboard/wholesellers",
       label: "Wholesellers",

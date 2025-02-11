@@ -140,7 +140,7 @@ const Wholesellers = () => {
 
         {isModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white p-12 rounded shadow-lg">
+            <div className="bg-white py-6 px-12 rounded shadow-lg w-96">
               <h2 className="text-lg font-bold mb-4 text-center">
                 Add a New Wholesellers
               </h2>
@@ -179,7 +179,7 @@ const Wholesellers = () => {
                     value={phoneNo}
                     onChange={(e) => setPhoneNo(e.target.value)}
                   />
-                  <div className="flex justify-end space-x-2">
+                  <div className="flex justify-end space-x-2 mt-4">
                     <button
                       onClick={() => setIsModelOpen(false)}
                       className="bg-red-500 px-4 py-2 rounded text-white"
@@ -238,8 +238,14 @@ const Wholesellers = () => {
                     </td>
                     <td className="border border-gray-300 p-2">
                       <p className="flex gap-2">
-                        <MdDelete size={20} className="text-red-600 cursor-pointer" />
-                        <FaEdit size={20} className="text-green-700 cursor-pointer" />
+                        <MdDelete
+                          size={20}
+                          className="text-red-600 cursor-pointer"
+                        />
+                        <FaEdit
+                          size={20}
+                          className="text-green-700 cursor-pointer"
+                        />
                       </p>
                     </td>
                   </tr>

@@ -29,7 +29,10 @@ const Stock = () => {
   const [purchasePrice, setPurchasePrice] = useState("");
   const [openStock, setOpenStock] = useState();
   const [lowStock, setLowStock] = useState();
-  const [formDate, setFormDate] = useState("");
+  const [formDate, setFormDate] = useState(() => {
+    const today = new Date().toISOString().split("T")[0];
+    return today;
+  });
   const [itemLocation, setItemLocation] = useState("");
 
   const [pageSize, setPageSize] = useState(10);
@@ -210,7 +213,7 @@ const Stock = () => {
           {/* //For Products */}
           {isModalOpenStock && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-              <div className="bg-white p-6 rounded shadow-lg ">
+              <div className="bg-white py-6 px-12 rounded shadow-lg  w-96">
                 <h2 className="text-lg font-bold mb-4 text-center">
                   Add a New Product
                 </h2>
@@ -291,7 +294,7 @@ const Stock = () => {
                     placeholder="Purchase  Price"
                     className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
                   />
-                  <div className="flex justify-end space-x-2">
+                  <div className="flex justify-end space-x-2 mt-4">
                     <button
                       onClick={() => setIsModalOpenStock(false)}
                       className="bg-red-500 px-4 py-2 rounded text-white"
