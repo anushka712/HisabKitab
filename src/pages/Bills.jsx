@@ -15,7 +15,7 @@ const Bills = () => {
 
   const [bills, setBills] = useState([]);
 
-  const [billDate, setBillDate] = useState(()=>{
+  const [billDate, setBillDate] = useState(() => {
     const today = new Date().toISOString().split("T")[0];
     return today;
   });
@@ -29,7 +29,7 @@ const Bills = () => {
   const [isModalOpen, setIsModelOpen] = useState(false);
 
   //POST Bills
-  const handleSubmit = async (e) => {
+  const postBill = async (e) => {
     setLoading(true);
     e.preventDefault();
 
@@ -55,7 +55,7 @@ const Bills = () => {
     try {
       const token = localStorage.getItem("authToken");
       const response = await axios.post(
-        "http://localhost:7287/api/Bills",
+        "https://localhost:7287/api/Bills",
         formData,
         {
           headers: {
@@ -63,7 +63,6 @@ const Bills = () => {
           },
         }
       );
-
       if (response.status === 200) {
         toast.success("Bill added successfully!");
         setBillDate("");
@@ -170,7 +169,7 @@ const Bills = () => {
 
             {/* Form Start */}
             <div>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={postBill}>
                 <input
                   type="date"
                   placeholder="Enter Bill Date"

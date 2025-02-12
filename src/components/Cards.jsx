@@ -18,6 +18,7 @@ export const Card = () => {
       value: 5,
       icon: Group,
       iconBgColor: "#D81B60",
+      link: "/dashboard/customers",
     },
   ];
 
@@ -41,14 +42,20 @@ export const Card = () => {
         }}
       >
         {dashboardData?.map((item, index) => (
-          <Paper key={index} elevation={2}>
-            <CountCard
-              label={item.label}
-              value={item.value}
-              icon={item.icon}
-              iconBgColor={item.iconBgColor}
-            />
-          </Paper>
+          <Link
+            key={index}
+            to={item.link}
+            style={{ textDecoration: "none", color: "inherit" }} // Removes default link styling
+          >
+            <Paper elevation={2} sx={{ cursor: "pointer", padding: 2 }}>
+              <CountCard
+                label={item.label}
+                value={item.value}
+                icon={item.icon}
+                iconBgColor={item.iconBgColor}
+              />
+            </Paper>
+          </Link>
         ))}
       </Grid>
     </Paper>
