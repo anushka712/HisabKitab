@@ -89,7 +89,6 @@ const Bills = () => {
     if (isPaid) formData.append("paidAmount", paidAmount);
     formData.append("totalAmount", totalAmount);
     formData.append("image", selectedImage);
-
     try {
       const token = localStorage.getItem("authToken");
       const response = await axios.post(
@@ -105,7 +104,6 @@ const Bills = () => {
 
       if (response.status === 200) {
         alert("Bill added successfully!");
-        // Reset form fields
         setBillDate("");
         setPanNo("");
         setBillNO("");

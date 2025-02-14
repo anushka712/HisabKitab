@@ -3,6 +3,10 @@ import { FaSearch } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Box, Typography, Button } from "@mui/material";
+import { MdDelete } from "react-icons/md";
+import { FaEdit } from "react-icons/fa";
+import Loader from "../components/Loader";
 
 const Stock = () => {
   const [search, setSearch] = useState("");
@@ -12,6 +16,7 @@ const Stock = () => {
   const [categories, setCategories] = useState("");
 
   const [categoryName, setCategoryName] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -24,8 +29,15 @@ const Stock = () => {
   const [purchasePrice, setPurchasePrice] = useState("");
   const [openStock, setOpenStock] = useState();
   const [lowStock, setLowStock] = useState();
-  const [formDate, setFormDate] = useState("");
+  const [formDate, setFormDate] = useState(() => {
+    const today = new Date().toISOString().split("T")[0];
+    return today;
+  });
   const [itemLocation, setItemLocation] = useState("");
+
+  const [pageSize, setPageSize] = useState(10);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [pageNumber, setPageNumber] = useState(1);
 
   //Add Category
   const handleCategoryAdd = async (e) => {
@@ -55,7 +67,7 @@ const Stock = () => {
     }
   };
 
-  //Get Product
+  //Get Category
   const getCategory = async (searchQuery) => {
     try {
       const token = localStorage.getItem("authToken");
@@ -135,6 +147,7 @@ const Stock = () => {
 
   //Get Product
   const getProduct = async (pageNumber, pageSize, searchQuery) => {
+    setLoading(true);
     try {
       const token = localStorage.getItem("authToken");
       const response = await axios.get("https://localhost:7287/api/Product", {
@@ -154,6 +167,8 @@ const Stock = () => {
       if (error.response?.status === 400) {
         toast.error("Bad Request: Check query parameters or data format.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -163,8 +178,12 @@ const Stock = () => {
   }, []);
 
   return (
-    <div>
-      <div className="flex justify-between">
+    <div className="md:ml-[20%] md:w-[80%] px-8 mt-4">
+      <div className="p-4">
+        {loading ? <Loader /> : <p className="text-lg font-semibold"></p>}
+      </div>
+      <h2 className="mt-8 text-2xl text-center font-bold">Stock</h2>
+      <div className="flex justify-between ">
         <div className="flex items-center border border-gray-300 rounded-md px-2 w-64 my-2">
           <input
             type="text"
@@ -179,13 +198,13 @@ const Stock = () => {
 
         <div className="mt-3 mr-3">
           <button
-            className="bg-green-700 text-white px-2 py-1 rounded-lg"
+            className="bg-green-600 text-white px-2 py-1 rounded-lg"
             onClick={() => setIsModalOpenStock(true)}
           >
             Add Products
           </button>
           <button
-            className="bg-green-700 text-white px-2 py-1 rounded-lg ml-4"
+            className="bg-green-600 text-white px-2 py-1 rounded-lg ml-4"
             onClick={() => setIsModalOpenCategory(true)}
           >
             Add Category
@@ -193,125 +212,106 @@ const Stock = () => {
 
           {/* //For Products */}
           {isModalOpenStock && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-    <div className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-3xl mx-4">
-      <h2 className="text-xl font-bold mb-6 text-center">Add a New Product</h2>
-      <form action="" onSubmit={handleProductAdd}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-gray-700 mb-1">Product Name</label>
-            <input
-              type="text"
-              value={productName}
-              onChange={(e) => setProductName(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-2 w-full mb-4"
-              placeholder="Enter the product name"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700 mb-1">Category</label>
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-2 w-full mb-4"
-            >
-              <option value="">Select a category</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.categoryId}>
-                  {category.categoryName}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-gray-700 mb-1">Total Quantity</label>
-            <input
-              type="text"
-              value={unit}
-              onChange={(e) => setUnit(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-2 w-full mb-4"
-              placeholder="Enter quantity"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700 mb-1">Open Stock</label>
-            <input
-              type="number"
-              value={openStock}
-              onChange={(e) => setOpenStock(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-2 w-full mb-4"
-              placeholder="Enter open stock"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700 mb-1">Low Stock</label>
-            <input
-              type="number"
-              value={lowStock}
-              onChange={(e) => setLowStock(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-2 w-full mb-4"
-              placeholder="Enter low stock"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700 mb-1">Item Location</label>
-            <input
-              type="text"
-              value={itemLocation}
-              onChange={(e) => setItemLocation(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-2 w-full mb-4"
-              placeholder="Enter item location"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700 mb-1">Date</label>
-            <input
-              type="date"
-              value={formDate}
-              onChange={(e) => setFormDate(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-2 w-full mb-4"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700 mb-1">Sales Price</label>
-            <input
-              type="number"
-              value={salesPrice}
-              onChange={(e) => setSalesPrice(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-2 w-full mb-4"
-              placeholder="Enter sales price"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700 mb-1">Purchase Price</label>
-            <input
-              type="number"
-              value={purchasePrice}
-              onChange={(e) => setPurchasePrice(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-2 w-full mb-4"
-              placeholder="Enter purchase price"
-            />
-          </div>
-        </div>
-        <div className="flex justify-end space-x-4">
-          <button
-            onClick={() => setIsModalOpenStock(false)}
-            className="bg-red-500 px-6 py-2 rounded-lg text-white"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="bg-green-800 text-white px-6 py-2 rounded-lg"
-          >
-            Add
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-)}
-
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+              <div className="bg-white py-6 px-12 rounded shadow-lg  w-96">
+                <h2 className="text-lg font-bold mb-4 text-center">
+                  Add a New Product
+                </h2>
+                <form action="" onSubmit={handleProductAdd}>
+                  <input
+                    type="text"
+                    value={productName}
+                    onChange={(e) => setProductName(e.target.value)}
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                    placeholder="Enter the product name"
+                  />
+                  <br />
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                  >
+                    <option value="">Select a category</option>
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.categoryId}>
+                        {category.categoryName}
+                      </option>
+                    ))}
+                  </select>
+                  <br />
+                  <input
+                    type="text"
+                    value={unit}
+                    onChange={(e) => setUnit(e.target.value)}
+                    placeholder="Total Quantity"
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                  />
+                  <br />
+                  <input
+                    type="number"
+                    value={openStock}
+                    onChange={(e) => setOpenStock(e.target.value)}
+                    placeholder="Open stock"
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                  />
+                  <br />
+                  <input
+                    type="number"
+                    value={lowStock}
+                    onChange={(e) => setLowStock(e.target.value)}
+                    placeholder="Low stock"
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                  />
+                  <br />
+                  <input
+                    type="string"
+                    value={itemLocation}
+                    onChange={(e) => setItemLocation(e.target.value)}
+                    placeholder="Item Location"
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                  />
+                  <br />
+                  <input
+                    type="date"
+                    value={formDate}
+                    onChange={(e) => setFormDate(e.target.value)}
+                    placeholder="Date"
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                  />
+                  <br />
+                  <input
+                    type="number"
+                    value={salesPrice}
+                    onChange={(e) => setSalesPrice(e.target.value)}
+                    placeholder="Sales Price"
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                  />
+                  <br />
+                  <input
+                    type="number"
+                    value={purchasePrice}
+                    onChange={(e) => setPurchasePrice(e.target.value)}
+                    placeholder="Purchase  Price"
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                  />
+                  <div className="flex justify-end space-x-2 mt-4">
+                    <button
+                      onClick={() => setIsModalOpenStock(false)}
+                      className="bg-red-500 px-4 py-2 rounded text-white"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="bg-green-600 text-white px-4 py-2 rounded"
+                    >
+                      Add
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
 
           {/* //For Category */}
           {isModalOpenCategory && (
@@ -340,7 +340,7 @@ const Stock = () => {
                     </button>
                     <button
                       type="submit"
-                      className="bg-green-800 text-white px-4 py-2 rounded"
+                      className="bg-green-600 text-white px-4 py-2 rounded"
                     >
                       Add
                     </button>
@@ -351,14 +351,13 @@ const Stock = () => {
           )}
         </div>
       </div>
-
       {/* GET Products */}
       <div>
-        <table className="w-full text-sm text-left ">
-          <thead className="text-xs border border-gray-600 text-black uppercase bg-gray-200 shadow-[inset_0_0_8px_rgba(0,0,0,0.6)]">
+        <table className="w-full text-sm text-left">
+          <thead className="text-xs border border-gray-600 uppercase">
             <tr>
-              <th className="border border-gray-300 p-2 text-left">
-                Categoty Name
+              <th className="border border-gray-300 p-2 py-4 text-left">
+                Category Name
               </th>
               <th className="border border-gray-300 p-2 text-left">fromDate</th>
               <th className="border border-gray-300 p-2 text-left">
@@ -380,45 +379,82 @@ const Stock = () => {
                 Sales Price
               </th>
               <th className="border border-gray-300 p-2 text-left">Unit</th>
+              <th className="border border-gray-300 p-2 text-left">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {products?.map((products) => {
-              return (
-                <tr key={products.id}>
+            {products && products.length > 0 ? (
+              products?.map((product) => (
+                <tr key={product.id}>
                   <td className="border border-gray-300 p-2">
-                    {products.categoryName}
+                    {product.categoryName}
                   </td>
                   <td className="border border-gray-300 p-2">
-                    {new Date(products.fromDate).toISOString().split("T")[0]}
+                    {new Date(product.fromDate).toISOString().split("T")[0]}
                   </td>
                   <td className="border border-gray-300 p-2">
-                    {products.itemLocation}
+                    {product.itemLocation}
                   </td>
                   <td className="border border-gray-300 p-2">
-                    {products.lowStock}
+                    {product.lowStock}
                   </td>
                   <td className="border border-gray-300 p-2">
-                    {products.openStock}
+                    {product.openStock}
                   </td>
                   <td className="border border-gray-300 p-2">
-                    {products.productName}
+                    {product.productName}
                   </td>
                   <td className="border border-gray-300 p-2">
-                    {products.purchasePrice}
+                    {product.purchasePrice}
                   </td>
                   <td className="border border-gray-300 p-2">
-                    {products.salesPrice}
+                    {product.salesPrice}
                   </td>
+                  <td className="border border-gray-300 p-2">{product.unit}</td>
                   <td className="border border-gray-300 p-2">
-                    {products.unit}
+                    <p className="flex gap-2">
+                      <MdDelete size={20} className="text-red-600" />
+                      <FaEdit size={20} className="text-green-700" />
+                    </p>
                   </td>
                 </tr>
-              );
-            })}
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={9}
+                  className="border border-gray-300 px-4 py-2 text-center"
+                >
+                  No Products found.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: "1rem",
+        }}
+      >
+        <Button
+          variant="outlined"
+          onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
+          disabled={pageNumber === 1 || loading}
+        >
+          Previous
+        </Button>
+        <Typography>Page {pageNumber}</Typography>
+        <Button
+          variant="outlined"
+          onClick={() => setPageNumber((prev) => prev + 1)}
+          disabled={loading}
+        >
+          Next
+        </Button>
+      </Box>
     </div>
   );
 };

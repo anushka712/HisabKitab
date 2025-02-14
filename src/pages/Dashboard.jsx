@@ -6,20 +6,46 @@ import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { FaRegNewspaper } from "react-icons/fa";
 import { RiStockFill } from "react-icons/ri";
 import { toast } from "react-toastify";
-import { IoPeople } from "react-icons/io5";
-import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
+import { FaUserGroup } from "react-icons/fa6";
+import { FaUserAlt } from "react-icons/fa";
+import { FaUsers } from "react-icons/fa";
+import { TbCategory } from "react-icons/tb";
 
 const Dashboard = () => {
   const location = useLocation();
   const navigate = useNavigate(); // Hook for navigation
 
   const links = [
-    { path: "/dashboard/chart", label: "Dashboard", icon: AiFillDashboard },
-    { path: "/dashboard/billing", label: "Billing", icon: FaMoneyBillTrendUp },
+    {
+      path: "/dashboard/main-component",
+      label: "Dashboard",
+      icon: AiFillDashboard,
+    },
+    { path: "/dashboard/user", label: "Profile", icon: FaUserAlt },
+    {
+      path: "/dashboard/billing",
+      label: "Sales Bill",
+      icon: FaMoneyBillTrendUp,
+    },
+
+    { path: "/dashboard/bills", label: "Save Bills", icon: FaRegNewspaper },
+    {
+      path: "/dashboard/wholesellers",
+      label: "Wholesellers",
+      icon: FaUserGroup,
+    },
+
+    {
+      path: "/dashboard/customers",
+      label: "Customers",
+      icon: FaUsers,
+    },
     { path: "/dashboard/stock", label: "Stock", icon: RiStockFill },
-    { path: "/dashboard/bills", label: "Bills", icon: FaRegNewspaper },
-    { path: "/dashboard/wholesellers", label: "Wholesellers", icon: IoPeople },
-    { path: "/dashboard/customers", label: "Customers", icon: GroupsOutlinedIcon },
+    {
+      path: "/dashboard/category",
+      label: "Category",
+      icon: TbCategory,
+    },
     { path: "", label: "Logout", icon: IoMdLogOut },
   ];
 
@@ -42,7 +68,7 @@ const Dashboard = () => {
     <>
       <div className="flex flex-col md:flex-row ">
         {/* Sidebar */}
-        <div className="text-white bg-black p-4 md:h-screen md:fixed md:w-[20%]">
+        <div className="text-white bg-black  md:h-screen md:fixed md:w-[20%] pl-2">
           <h2 className="font-bold text-2xl">Sales Management</h2>
           <ul className="mt-4">
             {links.map(({ path, label, icon: Icon }) =>
@@ -73,15 +99,7 @@ const Dashboard = () => {
           </ul>
         </div>
 
-        {/* Main Content */}
-        <div className="md:ml-[20%] p-4 md:w-[80%]">
-          <div className="text-center p-4 shadow-xl">
-            <h2 className="font-bold text-2xl">{titles[location.pathname] || "Sales Dashboard"}</h2>
-          </div>
-          <div>
-            <Outlet />
-          </div>
-        </div>
+        <Outlet />
       </div>
     </>
   );
