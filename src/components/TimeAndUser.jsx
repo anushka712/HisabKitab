@@ -55,7 +55,7 @@ export const TimeAndUser = () => {
         background: "linear-gradient(to right, #1E3A8A, #3B82F6)",
         // borderRadius: "8px",
         padding: "16px",
-        height: "20vh",
+        height: "15vh",
       }}
     >
       <Grid item>

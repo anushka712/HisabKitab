@@ -25,7 +25,7 @@ const Contact = () => {
     defaultValues: INITIAL_STATE,
   });
   return (
-    <div className="bg-gray-100 px-22 py-12 px-[10%]">
+    <div className=" px-22 py-12 px-[10%]">
       <div>
         <h1 className="mb-5 text-[40px] font-extrabold text-green-600">
           Lets get in Touch

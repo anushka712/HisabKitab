@@ -1,36 +1,11 @@
-import React from "react";
-import { motion } from "framer-motion";
+import { Wave } from "react-animated-text";
 
-function Users() {
-  const movingTexts = [
-    "105,00+ Downloads",
-    "500 Business",
-    "Made in Nepal",
-    "Supports online/offline",
-  ];
-
+const Users = () => {
   return (
-    <div className="w-full h-[150px] relative bg-green-50 flex justify-center items-center overflow-hidden">
-      <motion.div
-        className="text-2xl text-gray-700 flex gap-24 absolute whitespace-nowrap"
-        animate={{
-          x: ["0%", "-100%"], // Move from left to right
-        }}
-        transition={{
-          repeat: Infinity,
-          duration: 90, 
-          ease: "linear", 
-          repeatType: "loop", 
-          delay:0
-        }}
-      >
-        {/* Concatenate the movingTexts twice to ensure continuous flow */}
-        {movingTexts.concat(movingTexts).map((text, index) => (
-          <span key={index}>{text}</span>
-        ))}
-      </motion.div>
+    <div className="px-20 bg-green-50 h-28 flex justify-center items-center font-bold text-2xl italic text-green-800">
+      <Wave text="A system for sales prediction and inventory management using machine learning." />
     </div>
   );
-}
+};
 
 export default Users;
