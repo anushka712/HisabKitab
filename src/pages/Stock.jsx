@@ -385,7 +385,8 @@ const Stock = () => {
           <tbody>
             {products && products.length > 0 ? (
               products?.map((product) => (
-                <tr key={product.id}>
+                <tr key={product.id}
+                className="odd:bg-white even:bg-gray-100">
                   <td className="border border-gray-300 p-2">
                     {product.categoryName}
                   </td>
@@ -413,8 +414,8 @@ const Stock = () => {
                   <td className="border border-gray-300 p-2">{product.unit}</td>
                   <td className="border border-gray-300 p-2">
                     <p className="flex gap-2">
-                      <MdDelete size={20} className="text-red-600" />
-                      <FaEdit size={20} className="text-green-700" />
+                      <MdDelete size={20} className="text-red-600 cursor-pointer" />
+                      <FaEdit size={20} className="text-green-700 cursor-pointer" />
                     </p>
                   </td>
                 </tr>

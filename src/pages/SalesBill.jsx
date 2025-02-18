@@ -258,7 +258,7 @@ const SalesBill = () => {
         <div className="p-4">
           {loading ? <Loader /> : <p className="text-lg font-semibold"></p>}
         </div>
-        <h2 className="mt-4 text-xl text-center">Sales Bill</h2>
+        <h2 className="mt-4 text-xl font-bold text-center">Sales Bill</h2>
 
         <div className="flex w-full">
           <div className="my-2 mr-3 w-full">
@@ -334,7 +334,7 @@ const SalesBill = () => {
                           </label>
                         </div>
                         <div>
-                          <label className="block mb-1">Discount</label>
+                          <label className="block mb-1">Discount Percent</label>
                         </div>
                         <div>
                           <label className="block mb-1">Discount Amount</label>
@@ -397,7 +397,7 @@ const SalesBill = () => {
                               <input
                                 type="number"
                                 name="discount"
-                                placeholder="Enter Discount"
+                                placeholder="Discount Percent"
                                 value={product.discount}
                                 onChange={(e) => handleProductChange(index, e)}
                                 className="border border-gray-300 rounded px-3 py-1 w-full"
@@ -435,15 +435,6 @@ const SalesBill = () => {
                 <div className="grid grid-cols-2 gap-4 mt-4 w-full">
                   <input
                     type="text"
-                    placeholder="Total Amount"
-                    name="totalAmount"
-                    value={totalAmount}
-                    onChange={(e) => setTotalAmount(e.target.value)}
-                    className="border border-gray-300 rounded px-3 py-1 mb-2 w-full"
-                  />
-
-                  <input
-                    type="text"
                     placeholder="Total Quantity"
                     name="totalQuantity"
                     value={totalQuantity}
@@ -453,14 +444,13 @@ const SalesBill = () => {
 
                   <input
                     type="text"
-                    placeholder="Pay Mode"
-                    name="payMode"
-                    value={payMode}
-                    onChange={(e) => setPayMode(e.target.value)}
+                    placeholder="Total Amount"
+                    name="totalAmount"
+                    value={totalAmount}
+                    onChange={(e) => setTotalAmount(e.target.value)}
                     className="border border-gray-300 rounded px-3 py-1 mb-2 w-full"
                   />
-
-                  <input
+                   <input
                     type="text"
                     placeholder="Received Amount"
                     name="receiveAmount"
@@ -468,6 +458,18 @@ const SalesBill = () => {
                     onChange={(e) => setReceivedAmount(e.target.value)}
                     className="border border-gray-300 rounded px-3 py-1 mb-2 w-full"
                   />
+                  <select
+                    name="payMode"
+                    value={payMode}
+                    onChange={(e) => setPayMode(e.target.value)}
+                    className="border border-gray-300 rounded px-3 py-1 mb-2 w-full"
+                  >
+                    <option value="">Select Payment Mode</option>
+                    <option value="0">Cash</option>
+                    <option value="1">Online</option>
+                  </select>
+
+                 
                 </div>
 
                 <div className="flex justify-end space-x-2">

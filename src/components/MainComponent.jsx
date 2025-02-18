@@ -1,7 +1,7 @@
-import React from 'react'
+
 import { TimeAndUser } from './TimeAndUser';
-import { Card } from './Cards';
 import Chart from '../pages/Chart';
+import { CountPoints } from './CountPoints';
 
 
 
@@ -9,7 +9,7 @@ function MainComponent() {
   return (
     <div className="md:ml-[20%] md:w-[80%]">
       <TimeAndUser />
-      <Card />
+     <CountPoints/>
       <Chart/>
     </div>
   );

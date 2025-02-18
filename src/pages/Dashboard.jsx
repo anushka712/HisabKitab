@@ -57,7 +57,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <div className="bg-black h-12 flex justify-between items-center px-4">
+      <div className="bg-black h-14 flex justify-between items-center px-4  sticky top-0">
         <h2 className=" text-white font-bold text-2xl">Sales Management</h2>
         <UserMenu />
       </div>

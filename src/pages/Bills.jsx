@@ -258,16 +258,14 @@ const Bills = () => {
           <thead className="text-xs border border-black text-black uppercase ">
             <tr>
               <th className="border border-gray-300 p-2 text-left py-4">
-                Pan No:
-              </th>
-              <th className="border border-gray-300 p-2 text-left">
                 Bill Date
               </th>
               <th className="border border-gray-300 p-2 text-left">Bill No</th>
-              <th className="border border-gray-300 p-2 text-left">Is Paid</th>
+              <th className="border border-gray-300 p-2 text-left">PAN NO</th>
               <th className="border border-gray-300 p-2 text-left">
                 Paid Amount
               </th>
+              <th className="border border-gray-300 p-2 text-left">To Pay</th>
               <th className="border border-gray-300 p-2 text-left">
                 Total Amount
               </th>
@@ -277,18 +275,19 @@ const Bills = () => {
           <tbody>
             {bills.length > 0 ? (
               bills.map((bills, index) => (
-                <tr key={index}>
-                  <td className="border border-gray-300 p-2">{bills.panNo}</td>
+                <tr key={index} className="odd:bg-white even:bg-gray-100">
                   <td className="border border-gray-300 p-2">
                     {bills.billDate}
                   </td>
                   <td className="border border-gray-300 p-2">{bills.billNo}</td>
-                  <td className="border border-gray-300 p-2">{bills.isPaid}</td>
-                  <td className="border border-gray-300 p-2">
-                    {bills.totalAmount}
-                  </td>
+                  <td className="border border-gray-300 p-2">{bills.panNo}</td>
                   <td className="border border-gray-300 p-2">
                     {bills.paidAmount}
+                  </td>
+
+                  <td className="border border-gray-300 p-2">{bills.toPay}</td>
+                  <td className="border border-gray-300 p-2">
+                    {bills.totalAmount}
                   </td>
                   <td className="border border-gray-300 p-2">
                     <p className="flex gap-2">

@@ -114,7 +114,7 @@ const Wholesellers = () => {
         <div className="p-4">
           {loading ? <Loader /> : <p className="text-lg font-semibold"></p>}
         </div>
-        <h2 className="mt-8 text-2xl text-center font-bold">Wholesellers</h2>
+        <h2 className="mt-8 text-2xl text-center font-bold">Wholesalers</h2>
         <div className=" flex justify-between">
           <div className="flex items-center justify-between border border-gray-300 rounded-md px-2 w-64 my-2 ">
             <input
@@ -133,7 +133,7 @@ const Wholesellers = () => {
               className="bg-green-700 text-white px-2 py-1 rounded-lg"
               onClick={() => setIsModelOpen(true)}
             >
-              Add Wholesellers
+              Add Wholesalers
             </button>
           </div>
         </div>
@@ -213,8 +213,9 @@ const Wholesellers = () => {
                   Address
                 </th>
                 <th className="border border-gray-300 p-2 text-left">
-                  Phone No:
+                  Phone No
                 </th>
+                <th className="border border-gray-300 p-2 text-left">To Pay</th>
                 <th className="border border-gray-300 p-2 text-left">
                   Actions
                 </th>
@@ -223,7 +224,7 @@ const Wholesellers = () => {
             <tbody>
               {wholeSellers.length > 0 ? (
                 wholeSellers.map((wholeSeller, index) => (
-                  <tr key={index}>
+                  <tr key={index} className="odd:bg-white even:bg-gray-100">
                     <td className="border border-gray-300 p-2">
                       {wholeSeller.panNo}
                     </td>
@@ -235,6 +236,9 @@ const Wholesellers = () => {
                     </td>
                     <td className="border border-gray-300 p-2">
                       {wholeSeller.phoneNo}
+                    </td>
+                    <td className="border border-gray-300 p-2">
+                      {wholeSeller.toPay}
                     </td>
                     <td className="border border-gray-300 p-2">
                       <p className="flex gap-2">

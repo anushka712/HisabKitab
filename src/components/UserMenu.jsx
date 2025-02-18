@@ -17,7 +17,7 @@ import { toast } from "react-toastify";
 const UserMenu = () => {
   const token = localStorage.getItem("authToken");
   const decodedToken = jwtDecode(token);
-  const name = decodedToken?.given_name;
+  const name = decodedToken?.unique_name[1];
   const [anchorEl, setAnchorEl] = React.useState(null);
   const opened = Boolean(anchorEl);
 
@@ -48,10 +48,10 @@ const UserMenu = () => {
         aria-haspopup="true"
         aria-expanded={opened ? "true" : undefined}
       >
+        <h1 className="text-white pr-2 capitalize">{name}</h1>
         <Avatar src={name} sx={{ width: 32, height: 32 }}>
           {name?.charAt(0)?.toUpperCase()}
         </Avatar>
-        <h1 className="text-white pl-2 capitalize">{name}</h1>
       </IconButton>
 
       <Menu
@@ -71,8 +71,6 @@ const UserMenu = () => {
             Profile
           </MenuItem>
         </Link>
-
-        
 
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>

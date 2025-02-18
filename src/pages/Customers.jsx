@@ -270,6 +270,9 @@ const Customer = () => {
                     Address
                   </th>
                   <th className="border border-gray-300 px-4 py-2 text-left font-bold">
+                    To Receive
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-left font-bold">
                     Action
                   </th>
                 </tr>
@@ -292,6 +295,9 @@ const Customer = () => {
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
                         {customer.address}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {customer.toReceive}
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
                         <div className="flex items-center gap-2">
