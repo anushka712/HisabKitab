@@ -20,25 +20,35 @@ const Navbar = () => {
 
         {/* Links */}
         <div className="hidden md:flex gap-6 text-gray-700 text-lg font-medium">
-          <Link to="/" className="hover:text-green-600 transition duration-300">
-            Home
-          </Link>
-          <Link
-            to="/"
-            className="hover:text-green-600 transition duration-300"
-          >
-            Blog
-          </Link>
           <ScrollLink
-          smooth={true} duration={500}
-            to="featured"
+            smooth={true}
+            duration={500}
+            to="home"
             className="hover:text-green-600 transition duration-300 hover:cursor-pointer"
           >
-            Features
+            Home
+          </ScrollLink>
+          <ScrollLink
+            smooth={true}
+            duration={500}
+            to="about"
+            className="hover:text-green-600 transition duration-300 hover:cursor-pointer"
+          >
+            About
           </ScrollLink>
 
           <ScrollLink
-          smooth={true} duration={500}
+            smooth={true}
+            duration={500}
+            to="customers"
+            className="hover:text-green-600 transition duration-300 hover:cursor-pointer"
+          >
+            Customers
+          </ScrollLink>
+
+          <ScrollLink
+            smooth={true}
+            duration={500}
             to="contact"
             className="hover:text-green-600 transition duration-300 hover:cursor-pointer"
           >
@@ -47,8 +57,11 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Hamburger */}
-        <button className="block md:hidden text-gray-700 hover:text-green-600 focus:outline-none" onClick={toggleMenu}>
-          {isMenuOpen ? (<Cross/>) : ( <Hamberger/>)}
+        <button
+          className="block md:hidden text-gray-700 hover:text-green-600 focus:outline-none"
+          onClick={toggleMenu}
+        >
+          {isMenuOpen ? <Cross /> : <Hamberger />}
         </button>
       </div>
 
@@ -77,7 +90,6 @@ const Navbar = () => {
           </Link>
         </div>
       )}
-
     </div>
   );
 };

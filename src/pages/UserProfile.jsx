@@ -6,8 +6,6 @@ import Loader from "../components/Loader";
 
 const UserProfile = () => {
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState("");
-
   const [userData, setUserData] = useState({
     email: "",
     fullname: "",
@@ -16,21 +14,37 @@ const UserProfile = () => {
     phoneNo: "",
     shopName: "",
   });
+
   const [userId, setUserId] = useState(null);
-  const token = localStorage.getItem("authToken");
-  const decodedToken = jwtDecode(token);
-  const id = decodedToken.nameid;
+
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        setUserId(decodedToken?.nameid);
+      } catch (error) {
+        toast.error("Invalid token, please log in again.");
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (userId) {
+      fetchUser();
+    }
+  }, [userId]);
 
   const fetchUser = async () => {
+    if (!userId) return;
+
     setLoading(true);
     try {
       const token = localStorage.getItem("authToken");
       const response = await axios.get(
-        `https://localhost:7287/api/Auth/Profile/${id}`,
+        `https://localhost:7287/api/Auth/Profile/${userId}`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       const userDataFromAPI = response?.data?.data[0];
@@ -43,10 +57,7 @@ const UserProfile = () => {
         shopName: userDataFromAPI.shopName || "",
       });
     } catch (error) {
-      toast.error("Error fetching customers:", error.response || error.message);
-      if (error.response?.status === 400) {
-        toast.error("Bad Request: Check query parameters or data format.");
-      }
+      toast.error("Error fetching user profile.");
     } finally {
       setLoading(false);
     }
@@ -60,18 +71,19 @@ const UserProfile = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const updateProfile = async (e) => {
     e.preventDefault();
 
-    if (!id) {
+    if (!userId) {
       toast.error("User ID not found.");
       return;
     }
 
     try {
       setLoading(true);
-      const response = await axios.patch(
-        `https://localhost:7287/api/Auth/Profile/${id}`,
+      const token = localStorage.getItem("authToken");
+      await axios.patch(
+        `https://localhost:7287/api/Auth/Profile/${userId}`,
         userData,
         {
           headers: {
@@ -80,18 +92,14 @@ const UserProfile = () => {
           },
         }
       );
-      toast.log("User updated successfully:", response.message);
-      fetchUser();
+      toast.success("Profile updated successfully.");
+      fetchUser(); // Refresh user data after update
     } catch (error) {
-      toast.error("Error updating profile:", error);
+      toast.error("Error updating profile.");
     } finally {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
 
   return (
     <div className="w-full max-w-lg mx-auto p-6 bg-white rounded-lg shadow-lg my-6">
@@ -101,7 +109,7 @@ const UserProfile = () => {
       <h2 className="text-xl text-slate-800 text-center">
         Update your profile
       </h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={updateProfile} className="space-y-4">
         <div className="flex flex-col">
           <label htmlFor="email" className="text-gray-600">
             Email
@@ -117,7 +125,7 @@ const UserProfile = () => {
           />
         </div>
         <div className="flex flex-col">
-          <label htmlFor="fullName" className="text-gray-600">
+          <label htmlFor="fullname" className="text-gray-600">
             Full Name
           </label>
           <input

@@ -10,6 +10,7 @@ import { FaUserGroup } from "react-icons/fa6";
 import { FaUserAlt } from "react-icons/fa";
 import { FaUsers } from "react-icons/fa";
 import { TbCategory } from "react-icons/tb";
+import UserMenu from "../components/UserMenu";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -21,7 +22,6 @@ const Dashboard = () => {
       label: "Dashboard",
       icon: AiFillDashboard,
     },
-    { path: "/dashboard/user", label: "Profile", icon: FaUserAlt },
     {
       path: "/dashboard/billing",
       label: "Sales Bill",
@@ -46,7 +46,7 @@ const Dashboard = () => {
       label: "Category",
       icon: TbCategory,
     },
-    { path: "", label: "Logout", icon: IoMdLogOut },
+    
   ];
 
   const titles = {
@@ -66,10 +66,15 @@ const Dashboard = () => {
 
   return (
     <>
+      <div className="bg-black h-14 flex justify-between items-center px-4  sticky top-0">
+        <h2 className=" text-white font-bold text-2xl">Sales Management</h2>
+        <UserMenu />
+      </div>
+
       <div className="flex flex-col md:flex-row ">
         {/* Sidebar */}
         <div className="text-white bg-black  md:h-screen md:fixed md:w-[20%] pl-2">
-          <h2 className="font-bold text-2xl">Sales Management</h2>
+          
           <ul className="mt-4">
             {links.map(({ path, label, icon: Icon }) =>
               label === "Logout" ? (

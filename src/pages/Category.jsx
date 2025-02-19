@@ -10,11 +10,13 @@ import { Box, Button, Typography } from "@mui/material";
 const Category = () => {
   const [search, setSearch] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [categoryName, setCategoryName] = useState([]);
+  const [categoryName, setCategoryName] = useState("");
   const [loading, setLoading] = useState(false);
   const [isModalOpenCategory, setIsModalOpenCategory] = useState(false);
+  const [isEditCategory, setIsEditCategory] = useState(false);
   const [categories, setCategories] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
+  const [categoryId, setCategoryId] = useState("");
 
   //Add Category
   const handleCategoryAdd = async (e) => {
@@ -68,7 +70,7 @@ const Category = () => {
     }
   };
 
-  //DELETE Customer
+  //DELETE Category
   const deleteCategory = async (categoryId) => {
     setLoading(true);
     try {
@@ -90,9 +92,47 @@ const Category = () => {
       toast.error("Error deleting customer:", error);
     }
   };
+
+  //UPDATE Category
+  const handleCategoryUpdate = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    if (!categoryName) {
+      toast.error("Category Name is Required");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await axios.put(
+        `https://localhost:7287/api/Category/${categoryId}`,
+        { categoryName },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        toast.success("Category updated successfully.");
+        setIsEditCategory(false);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "An error occurred!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEditClick = (category) => {
+    setCategoryId(category?.categoryId);
+    setCategoryName(category?.categoryName);
+    setIsEditCategory(true);
+  };
+
   useEffect(() => {
     getCategory();
-  }, []);
+  }, [categoryId]);
 
   return (
     <div className="mt-4 md:ml-[20%] md:w-[80%] px-10">
@@ -172,7 +212,7 @@ const Category = () => {
           <tbody>
             {categories && categories.length > 0 ? (
               categories?.map((category) => (
-                <tr key={category.id}>
+                <tr key={category.id} className="odd:bg-white even:bg-gray-100">
                   <td className="border border-gray-300 p-2">
                     {category.categoryName}
                   </td>
@@ -180,12 +220,16 @@ const Category = () => {
                     <p className="flex gap-2">
                       <MdDelete
                         size={20}
-                        className="text-red-600"
+                        className="text-red-600 cursor-pointer"
                         onClick={() => {
                           deleteCategory(category.categoryId);
                         }}
                       />
-                      <FaEdit size={20} className="text-green-700" />
+                      <FaEdit
+                        onClick={() => handleEditClick(category)}
+                        size={20}
+                        className="text-green-700 cursor-pointer"
+                      />
                     </p>
                   </td>
                 </tr>
@@ -203,6 +247,44 @@ const Category = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Edit Category */}
+      {isEditCategory && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded shadow-lg ">
+            <h2 className="text-lg font-bold mb-4 text-center">
+              Update Category
+            </h2>
+            <form action="" onSubmit={handleCategoryUpdate}>
+              <input
+                type="text"
+                name="categoryName"
+                value={categoryName}
+                onChange={(e) => setCategoryName(e.target.value)}
+                className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                placeholder="Enter the Category Name"
+              />
+              <br />
+
+              <div className="flex justify-end space-x-2">
+                <button
+                  onClick={() => setIsEditCategory(false)}
+                  className="bg-red-500 px-4 py-2 rounded text-white"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-green-600 text-white px-4 py-2 rounded"
+                >
+                  Update
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <Box
         sx={{
           display: "flex",
