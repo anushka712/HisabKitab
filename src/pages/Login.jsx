@@ -17,21 +17,17 @@ function Login() {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
-  const handleLogin = async (e) => {
-    setLoading(true);
-    e.preventDefault();
-    if (!email || !password) {
-      toast.error("All fields required");
-      return;
-    }
-    try {
-      const response = await axios.post(
-        "https://localhost:7287/api/Auth/login",
-        {
-          email,
-          password,
-        }
-      );
+const handleLogin = async(e)=>{
+  e.preventDefault();
+  if(!email || !password){
+    toast.error("All fields required")
+    return;
+  }
+  try {
+    const response = await axios.post("https://localhost:7287/api/Auth/login",{
+      email,
+      password
+    })
 
       //console.log(response.data)
 
