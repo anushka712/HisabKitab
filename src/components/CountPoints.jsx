@@ -33,7 +33,7 @@ export const CountPoints = () => {
               1000
             </Typography>
             <Typography variant="caption" color="text.secondary">
-             Total To Receive Money
+              Total To Receive Money
             </Typography>
           </CardContent>
         </Card>
@@ -82,7 +82,7 @@ export const CountPoints = () => {
                 color="text.primary"
                 fontWeight="medium"
               >
-               Products
+                Sales of Months
               </Typography>
               <Typography
                 variant="body2"
@@ -101,7 +101,7 @@ export const CountPoints = () => {
               700
             </Typography>
             <Typography variant="caption" color="text.secondary">
-              Total Products
+              Sales of Months
             </Typography>
           </CardContent>
         </Card>

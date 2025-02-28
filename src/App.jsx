@@ -9,7 +9,6 @@ import Login from "./pages/Login";
 import SalesBill from "./pages/SalesBill";
 import Stock from "./pages/Stock";
 import Signup from "./pages/Signup";
-import Bills from "./pages/Bills";
 import Category from "./pages/Category";
 import Home from "./pages/Home";
 import Contact from "./components/Contact";
@@ -19,6 +18,7 @@ import Wholesellers from "./pages/Wholesellers";
 import Customers from "./pages/Customers";
 import UserProfile from "./pages/UserProfile";
 import MainComponent from "./components/MainComponent";
+import SaveBills from "./pages/SaveBills";
 
 function App() {
   return (
@@ -35,7 +35,7 @@ function App() {
           <Route path="/dashboard/billing" element={<SalesBill />}></Route>
           <Route path="/dashboard/stock" element={<Stock />}></Route>
           <Route path="/dashboard/customers" element={<Customers />}></Route>
-          <Route path="/dashboard/bills" element={<Bills />}></Route>
+          <Route path="/dashboard/bills" element={<SaveBills />}></Route>
           <Route path="/dashboard/user" element={<UserProfile />}></Route>
           <Route
             path="/dashboard/wholesellers"

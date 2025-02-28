@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { FaSearch, FaEdit } from "react-icons/fa";
 import axios from "axios";
@@ -6,7 +6,7 @@ import Loader from "../components/Loader";
 import { Box, Typography, Button } from "@mui/material";
 import { MdDelete } from "react-icons/md";
 
-const Bills = () => {
+const SaveBills = () => {
   const [loading, setLoading] = useState(false);
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -261,6 +261,7 @@ const Bills = () => {
                 Bill Date
               </th>
               <th className="border border-gray-300 p-2 text-left">Bill No</th>
+              <th className="border border-gray-300 p-2 text-left">Bill</th>
               <th className="border border-gray-300 p-2 text-left">PAN NO</th>
               <th className="border border-gray-300 p-2 text-left">
                 Paid Amount
@@ -280,6 +281,20 @@ const Bills = () => {
                     {bills.billDate}
                   </td>
                   <td className="border border-gray-300 p-2">{bills.billNo}</td>
+                  <td className="border border-gray-300 p-2">
+                    <a
+                      href={bills.imagePath}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <img
+                        src={bills.imagePath}
+                        alt="bill"
+                        className="w-12 h-12 cursor-pointer"
+                      />
+                    </a>
+                  </td>
+
                   <td className="border border-gray-300 p-2">{bills.panNo}</td>
                   <td className="border border-gray-300 p-2">
                     {bills.paidAmount}
@@ -343,4 +358,4 @@ const Bills = () => {
   );
 };
 
-export default Bills;
+export default SaveBills;

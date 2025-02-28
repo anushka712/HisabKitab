@@ -1,11 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { IoIosAddCircle } from "react-icons/io";
-import { MdDelete } from "react-icons/md";
-import { FaEdit } from "react-icons/fa";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
-import { jwtDecode } from "jwt-decode";
 
 const SalesBill = () => {
   const [isModelOpen, setIsModelOpen] = useState(false);
@@ -22,9 +18,6 @@ const SalesBill = () => {
   const [receivedAmount, setReceivedAmount] = useState("");
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
 
-  const token = localStorage.getItem("authToken");
-  const decodedToken = jwtDecode(token);
-  const id = decodedToken.nameid;
 
   const [salesId, setSalesId] = useState(null);
 
@@ -101,7 +94,22 @@ const SalesBill = () => {
   const handleProductChange = (index, e) => {
     const { name, value } = e.target;
     const updatedProducts = [...products];
-    updatedProducts[index][name] = value;
+
+    if (name === "productId") {
+      // Find the product based on selected productId
+      const selectedProduct = availableProducts.find(
+        (product) => product.productId === value
+      );
+
+      // Update productId and productName
+      updatedProducts[index][name] = value;
+      updatedProducts[index].productName = selectedProduct
+        ? selectedProduct.productName
+        : "";
+    } else {
+      updatedProducts[index][name] = value;
+    }
+
     setProducts(updatedProducts);
   };
 
@@ -142,7 +150,7 @@ const SalesBill = () => {
 
       const billData = {
         billNo,
-        billDate,
+        billDate: billDate ? billDate : "",
         totalAmount,
         totalQuantity,
         products: products.map((product) => ({
@@ -269,10 +277,16 @@ const SalesBill = () => {
                     type="date"
                     placeholder="Enter Bill Date"
                     name="billDate"
-                    value={billDate}
-                    onChange={(e) => setBillDate(e.target.value)}
+                    value={billDate ? billDate.split("T")[0] : ""}
+                    onChange={(e) => {
+                      const selectedDate = new Date(e.target.value);
+                      selectedDate.setHours(0, 0, 0, 0);
+                      const isoDate = selectedDate.toISOString();
+                      setBillDate(isoDate);
+                    }}
                     className="border border-gray-300 rounded px-3 py-1 mb-2 w-full"
                   />
+
                   <input
                     type="text"
                     className="border border-gray-300 rounded px-3 py-1 mb-2 w-full"
@@ -344,7 +358,7 @@ const SalesBill = () => {
                       {/* Products Inputs */}
                       {products.map((product, index) => (
                         <div key={index} className="mb-1">
-                          <div className="grid grid-cols-6 ">
+                          <div className="grid grid-cols-6  gap-2">
                             {/* Product Name */}
                             <div className="col-span-2">
                               <select
@@ -362,7 +376,7 @@ const SalesBill = () => {
                                     value={availableProduct.productId}
                                   >
                                     {availableProduct.productName} -{" "}
-                                    {availableProduct.SalesPrice}
+                                    {availableProduct.salesPrice}
                                   </option>
                                 ))}
                               </select>
@@ -450,7 +464,7 @@ const SalesBill = () => {
                     onChange={(e) => setTotalAmount(e.target.value)}
                     className="border border-gray-300 rounded px-3 py-1 mb-2 w-full"
                   />
-                   <input
+                  <input
                     type="text"
                     placeholder="Received Amount"
                     name="receiveAmount"
@@ -468,8 +482,6 @@ const SalesBill = () => {
                     <option value="0">Cash</option>
                     <option value="1">Online</option>
                   </select>
-
-                 
                 </div>
 
                 <div className="flex justify-end space-x-2">
