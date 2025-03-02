@@ -3,14 +3,7 @@ import { useForm } from "react-hook-form";
 import { FaSearch, FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import axios from "axios";
-import {
-  Box,
-  Container,
-  TextField,
-  Button,
-  Typography,
-  Grid,
-} from "@mui/material";
+import { Box, Container, Button, Typography } from "@mui/material";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
 import CustomerEdit from "../Edit/CustomerEdit";
@@ -19,19 +12,19 @@ const Customer = () => {
   const [openQR, setOpenQR] = useState(false);
   const [selectedCustomerId, setSelectedCustomerId] = useState(null);
 
-  const [search, setSearch] = useState("");
   const [customers, setCustomers] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
 
   const [isModalOpen, setIsModelOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   //Form data
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm();
 
@@ -40,33 +33,55 @@ const Customer = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("authToken");
-      const response = await axios.post(
-        "https://localhost:7287/api/Customer",
-        data,
-        {
+
+      if (isEditMode) {
+        await axios.put(
+          "https://localhost:7287/api/Customer",
+          {
+            customerId: data.customerId, 
+            phoneNumber: data.phoneNumber,
+            email: data.email,
+            address: data.address,
+            customerName:data.customerName,
+            cPanNo: data.cPanNo,
+          },        
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        toast.success("Customer updated successfully");
+        setLoading(false);
+      } else {
+        await axios.post("https://localhost:7287/api/Customer", data, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
-      );
-      toast.success("Customer data submitted successfully!");
+        });
+        toast.success("Customer data submitted successfully!");
+      }
+
       setIsModelOpen(false);
-      setLoading(false);
     } catch (error) {
-      toast.error("An error occurred while submitting the form.", error);
+      toast.error("An error occurred while submitting the form.");
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   //GET Customers
-  const fetchCustomers = async (pageNumber, pageSize, searchQuery) => {
+  const fetchCustomers = async (searchQuery, pageNumber, pageSize) => {
     setLoading(true);
     try {
       const token = localStorage.getItem("authToken");
       const response = await axios.get("https://localhost:7287/api/Customer", {
         params: {
+          SearchQuery: searchQuery,
           PageNumber: pageNumber,
           PageSize: pageSize,
-          SearchQuery: searchQuery,
         },
         headers: {
           Authorization: `Bearer ${token}`,
@@ -109,11 +124,19 @@ const Customer = () => {
 
   useEffect(() => {
     fetchCustomers();
-  }, [pageNumber, pageSize, searchQuery]);
+  }, []);
 
-  const handleRowClick = (customerId) => {
-    setSelectedCustomerId(customerId);
-    setOpenQR(true);
+  const handleEdit = (customerId) => {
+    const customer = customers.find((c) => c.customerId === customerId);
+    console.log(customer);
+    setIsModelOpen(true);
+    setIsEditMode(true);
+    setValue("customerId", customer?.customerId);
+    setValue("customerName", customer?.customerName);
+    setValue("phoneNumber", customer?.phoneNumber);
+    setValue("email", customer?.email);
+    setValue("address", customer?.address);
+    setValue("cPanNo", "12");
   };
 
   return (
@@ -131,7 +154,7 @@ const Customer = () => {
                 type="text"
                 className="outline-none w-full pl-2 pr-8 py-1 text-gray-700"
                 placeholder="Search..."
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
               <button className="text-gray-500">
                 <FaSearch size={20} />
@@ -141,7 +164,10 @@ const Customer = () => {
             <div className="flex justify-between items-center mt-2 ">
               <button
                 className="bg-green-700 text-white px-2 py-1 rounded-lg"
-                onClick={() => setIsModelOpen(true)}
+                onClick={() => {
+                  setIsModelOpen(true);
+                  setIsEditMode(false);
+                }}
               >
                 Add Customers
               </button>
@@ -152,7 +178,7 @@ const Customer = () => {
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
               <div className="bg-white py-6 px-12 rounded-lg shadow-lg w-96">
                 <h2 className="text-xl font-bold text-center mb-4">
-                  Add New Customer
+                  {isEditMode ? "Edit Customer" : "Add New Customer"}
                 </h2>
                 <form onSubmit={handleSubmit(postCustomers)}>
                   <input
@@ -187,19 +213,24 @@ const Customer = () => {
                     </p>
                   )}
 
-                  <input
-                    type="text"
-                    placeholder="PAN No"
-                    className="w-full border border-gray-300 px-3 py-1 rounded mb-2"
-                    {...register("cPanNo", {
-                      required: "PAN Number is required",
-                    })}
-                  />
-                  {errors.cPanNo && (
-                    <p className="text-red-500 text-sm">
-                      {errors.cPanNo.message}
-                    </p>
-                  )}
+                  {/* Show PAN No only when NOT in edit mode */}
+                  
+                    <>
+                      <input
+                        type="text"
+                        placeholder="PAN No"
+                        className="w-full border border-gray-300 px-3 py-1 rounded mb-2"
+                        {...register("cPanNo", {
+                          required: "PAN Number is required",
+                        })}
+                      />
+                      {errors.cPanNo && (
+                        <p className="text-red-500 text-sm">
+                          {errors.cPanNo.message}
+                        </p>
+                      )}
+                    </>
+               
 
                   <input
                     type="email"
@@ -222,7 +253,6 @@ const Customer = () => {
                   <input
                     placeholder="Address"
                     className="w-full border border-gray-300 px-3 py-1 rounded mb-2"
-                    rows={4}
                     {...register("address", {
                       required: "Address is required",
                     })}
@@ -245,7 +275,7 @@ const Customer = () => {
                       type="submit"
                       className="bg-green-600 text-white px-4 py-2 rounded"
                     >
-                      Submit
+                      {isEditMode ? "Update" : "Add"}
                     </button>
                   </div>
                 </form>
@@ -307,6 +337,13 @@ const Customer = () => {
                               className="text-red-600 cursor-pointer"
                               onClick={() => {
                                 deleteCustomer(customer.customerId);
+                              }}
+                            />
+                            <FaEdit
+                              size={20}
+                              className="text-green-700 cursor-pointer"
+                              onClick={() => {
+                                handleEdit(customer.customerId);
                               }}
                             />
                           </div>

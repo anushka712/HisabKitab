@@ -22,6 +22,7 @@ const Stock = () => {
 
   //Priduct items
   const [products, setProducts] = useState([]);
+  const [productId, setProductId] = useState("");
   const [productName, setProductName] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [unit, setUnit] = useState("");
@@ -29,18 +30,21 @@ const Stock = () => {
   const [purchasePrice, setPurchasePrice] = useState("");
   const [openStock, setOpenStock] = useState();
   const [lowStock, setLowStock] = useState();
-  const [formDate, setFormDate] = useState(() => {
+  const [fromDate, setFromDate] = useState(() => {
     const today = new Date().toISOString().split("T")[0];
     return today;
   });
+  const [expiryDate, setExpiryDate] = useState("");
   const [itemLocation, setItemLocation] = useState("");
 
   const [pageSize, setPageSize] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   //Add Category
   const handleCategoryAdd = async (e) => {
+    setLoading(true);
     e.preventDefault();
     if (!categoryName) {
       toast.error("Category Name is Required");
@@ -57,18 +61,23 @@ const Stock = () => {
           },
         }
       );
+      setLoading(false);
 
       if (response.status === 200) {
         toast.success("Category added successfully.");
         setIsModalOpenCategory(false);
+        setLoading(false);
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "An error occurred!");
+    } finally {
+      setLoading(false);
     }
   };
 
   //Get Category
   const getCategory = async (searchQuery) => {
+    setLoading(true);
     try {
       const token = localStorage.getItem("authToken");
       const response = await axios.get("https://localhost:7287/api/Category", {
@@ -80,26 +89,28 @@ const Stock = () => {
         },
       });
       setCategories(response.data.data);
+      setLoading(false);
     } catch (error) {
       toast.error("Error fetching category:", error.response || error.message);
       if (error.response?.status === 400) {
         toast.error("Bad Request: Check query parameters or data format.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   //Add product
   const handleProductAdd = async (e) => {
+    setLoading(true);
     e.preventDefault();
     if (
-      !productName ||
-      !selectedCategory ||
       !unit ||
       !salesPrice ||
       !purchasePrice ||
       !openStock ||
       !lowStock ||
-      !formDate ||
+      !fromDate ||
       !itemLocation
     ) {
       toast.error("Product Detail is Required");
@@ -107,28 +118,53 @@ const Stock = () => {
     }
     try {
       const token = localStorage.getItem("authToken");
-      const response = await axios.post(
-        "https://localhost:7287/api/Product",
-        {
-          productName,
-          categoryId: selectedCategory,
-          unit,
-          salesPrice,
-          purchasePrice,
-          openStock,
-          lowStock,
-          formDate,
-          itemLocation,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+      if (isEditMode) {
+        const response = await axios.put(
+          `https://localhost:7287/api/Product`,
+          {
+            productName,
+            productId,
+            unit,
+            salesPrice,
+            categoryName,
+            purchasePrice,
+            openStock,
+            lowStock,
+            fromDate,
+            itemLocation,
           },
-        }
-      );
-
-      if (response.status === 200) {
-        toast.success("Product added successfully.");
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        toast.success(response?.data?.message);
+        setLoading(false);
+        setIsModalOpenStock(false);
+      } else {
+        const response = await axios.post(
+          "https://localhost:7287/api/Product",
+          {
+            productName,
+            categoryId: selectedCategory,
+            unit,
+            salesPrice,
+            purchasePrice,
+            openStock,
+            lowStock,
+            fromDate,
+            expiryDate,
+            itemLocation,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setLoading(false);
+        toast.success(response?.data?.message);
         setIsModalOpenStock(false);
         setProductName("");
         setSelectedCategory("");
@@ -137,11 +173,15 @@ const Stock = () => {
         setPurchasePrice("");
         setOpenStock("");
         setLowStock("");
-        setFormDate("");
+        setFromDate("");
+        setExpiryDate("");
         setItemLocation("");
+        setLoading(false);
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "An error occurred!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -160,8 +200,8 @@ const Stock = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      // console.log("Response Data:", response?.data?.data[0]?.customerName);
       setProducts(response?.data?.data);
+      setLoading(false);
     } catch (error) {
       toast.error("Error fetching customers:", error.response || error.message);
       if (error.response?.status === 400) {
@@ -170,6 +210,47 @@ const Stock = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  //DELETE Product
+  const deleteProduct = async (productId) => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await axios.delete(
+        `https://localhost:7287/api/Product/${productId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success(response?.data?.message);
+      setProducts(
+        products.filter((product) => product.productId !== productId)
+      );
+      setLoading(false);
+    } catch (error) {
+      toast.error("Error deleting Product:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEdit = (productId) => {
+    const product = products.find((c) => c.productId === productId);
+    setIsModalOpenStock(true);
+    setIsEditMode(true);
+    setProductName(product.productName);
+    setUnit(product.unit);
+    setSalesPrice(product.salesPrice);
+    setPurchasePrice(product.purchasePrice);
+    setOpenStock(product.openStock);
+    setLowStock(product.lowStock);
+    setFromDate(product.fromDate);
+    setItemLocation(product.itemLocation);
+    setCategoryName("TRY");
+    setProductId(product.productId);
   };
 
   useEffect(() => {
@@ -214,8 +295,8 @@ const Stock = () => {
           {isModalOpenStock && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
               <div className="bg-white py-6 px-12 rounded shadow-lg  w-96">
-                <h2 className="text-lg font-bold mb-4 text-center">
-                  Add a New Product
+                <h2 className="text-xl font-bold text-center mb-4">
+                  {isEditMode ? "Edit Product" : "Add New Product"}
                 </h2>
                 <form action="" onSubmit={handleProductAdd}>
                   <input
@@ -226,19 +307,22 @@ const Stock = () => {
                     placeholder="Enter the product name"
                   />
                   <br />
-                  <select
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
-                  >
-                    <option value="">Select a category</option>
-                    {categories.map((category) => (
-                      <option key={category.id} value={category.categoryId}>
-                        {category.categoryName}
-                      </option>
-                    ))}
-                  </select>
-                  <br />
+
+                  {!isEditMode && (
+                    <select
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                      className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                    >
+                      <option value="">Select a category</option>
+                      {categories.map((category) => (
+                        <option key={category.id} value={category.categoryId}>
+                          {category.categoryName}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+
                   <input
                     type="text"
                     value={unit}
@@ -273,12 +357,23 @@ const Stock = () => {
                   <br />
                   <input
                     type="date"
-                    value={formDate}
-                    onChange={(e) => setFormDate(e.target.value)}
+                    value={fromDate}
+                    onChange={(e) => setFromDate(e.target.value)}
                     placeholder="Date"
                     className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
                   />
                   <br />
+
+                  {!isEditMode && (
+                    <input
+                      type="date"
+                      value={expiryDate}
+                      onChange={(e) => setExpiryDate(e.target.value)}
+                      placeholder="Date"
+                      className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                    />
+                  )}
+
                   <input
                     type="number"
                     value={salesPrice}
@@ -305,7 +400,7 @@ const Stock = () => {
                       type="submit"
                       className="bg-green-600 text-white px-4 py-2 rounded"
                     >
-                      Add
+                      {isEditMode ? "Update" : "Add"}
                     </button>
                   </div>
                 </form>
@@ -385,8 +480,7 @@ const Stock = () => {
           <tbody>
             {products && products.length > 0 ? (
               products?.map((product) => (
-                <tr key={product.id}
-                className="odd:bg-white even:bg-gray-100">
+                <tr key={product.id} className="odd:bg-white even:bg-gray-100">
                   <td className="border border-gray-300 p-2">
                     {product.categoryName}
                   </td>
@@ -414,8 +508,20 @@ const Stock = () => {
                   <td className="border border-gray-300 p-2">{product.unit}</td>
                   <td className="border border-gray-300 p-2">
                     <p className="flex gap-2">
-                      <MdDelete size={20} className="text-red-600 cursor-pointer" />
-                      <FaEdit size={20} className="text-green-700 cursor-pointer" />
+                      <MdDelete
+                        size={20}
+                        className="text-red-600 cursor-pointer"
+                        onClick={() => {
+                          deleteProduct(product.productId);
+                        }}
+                      />
+                      <FaEdit
+                        size={20}
+                        className="text-green-700 cursor-pointer"
+                        onClick={() => {
+                          handleEdit(product.productId);
+                        }}
+                      />
                     </p>
                   </td>
                 </tr>

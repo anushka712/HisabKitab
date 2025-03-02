@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MdDelete } from "react-icons/md";
 import { FaSearch, FaEdit } from "react-icons/fa";
 import axios from "axios";
@@ -16,14 +16,16 @@ const Wholesellers = () => {
   const [sellerName, setSellerName] = useState("");
   const [address, setAddress] = useState("");
   const [phoneNo, setPhoneNo] = useState("");
+  const [toPay, setToPay] = useState(0);
 
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   //GET WholeSellers
-  const handlewholesellers = async () => {
+  const getwholesellers = async () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("authToken");
@@ -39,7 +41,7 @@ const Wholesellers = () => {
         setLoading(false);
         setWholeSellers(response.data.data);
       } else if (response.data.statusCode === 400) {
-        toast.error(`Error: ${response.data.message}`);
+        toast.error(`Error: ${response?.data?.message}`);
       } else {
         toast.error("Failed to fetch data: " + response.data.message);
       }
@@ -55,56 +57,116 @@ const Wholesellers = () => {
   };
 
   //POST WholeSellers
- const addWholeSellers = async (e) => {
-   e.preventDefault();
-   setLoading(true); 
-   try {
-     const token = localStorage.getItem("authToken");
-     const response = await axios.post(
-       "https://localhost:7287/api/Wholesaler",
-       {
-         panNo,
-         sellerName,
-         address,
-         phoneNo,
-       },
-       {
-         headers: {
-           Authorization: `Bearer ${token}`,
-         },
-       }
-     );
+  const addWholeSellers = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("authToken");
 
-     if (response.data.statusCode === 200) {
-       toast.success(response.data.message);
-       setIsModelOpen(false);
-       setPanNo("");
-       setSellerName("");
-       setAddress("");
-       setPhoneNo("");
-     } else {
-       toast.error(`Error: ${response.data.message || "Unknown error"}`);
-     }
-   } catch (error) {
-     if (error.response) {
-       const errorMessage =
-         error.response?.data?.message ||
-         error.response?.data?.error ||
-         "An unexpected error occurred";
-       toast.error(errorMessage);
-     } else if (error.request) {
-       toast.error("No response from the server. Please try again later.");
-     } else {
-       toast.error("An unexpected error occurred.");
-     }
-   } finally {
-     setLoading(false); 
-   }
- };
+      if (isEditMode) {
+        const response = await axios.put(
+          "https://localhost:7287/api/Wholesaler",
+          {
+            panNo,
+            sellerName,
+            address,
+            phoneNo,
+            toPay,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        toast.success(response.data.message);
+        setIsModelOpen(false);
 
+        if (response.data.statusCode === 200) {
+          toast.success(response.data.message);
+          setIsModelOpen(false);
+          setPanNo("");
+          setSellerName("");
+          setAddress("");
+          setPhoneNo("");
+        }
+      } else {
+        const response = await axios.post(
+          "https://localhost:7287/api/Wholesaler",
+          {
+            panNo,
+            sellerName,
+            address,
+            phoneNo,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        toast.success(response.data.message);
+        setIsModelOpen(false);
+        setPanNo("");
+        setSellerName("");
+        setAddress("");
+        setPhoneNo("");
+      }
+    } catch (error) {
+      if (error.response) {
+        const errorMessage =
+          error.response?.data?.message ||
+          error.response?.data?.error ||
+          "An unexpected error occurred";
+        toast.error(errorMessage);
+      } else if (error.request) {
+        toast.error("No response from the server. Please try again later.");
+      } else {
+        toast.error("An unexpected error occurred.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  //DELETE Wholesaler
+  const deleteWholesaler = async (panNo) => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await axios.delete(
+        `https://localhost:7287/api/Wholesaler/${panNo}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success(response?.data?.message);
+      setWholeSellers(
+        wholeSellers.filter((Wholesaler) => Wholesaler.panNo !== panNo)
+      );
+      setLoading(false);
+    } catch (error) {
+      toast.error("Error deleting Wholesaler:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEdit = (panNo) => {
+    const wholesaler = wholeSellers.find((c) => c.panNo === panNo);
+    setIsModelOpen(true);
+    setIsEditMode(true);
+    setPanNo(wholesaler.panNo);
+    setSellerName(wholesaler.sellerName);
+    setAddress(wholesaler.address);
+    setPhoneNo(wholesaler.phoneNo);
+    setToPay(wholesaler.toPay);
+  };
 
   useEffect(() => {
-    handlewholesellers();
+    getwholesellers();
   }, []);
 
   return (
@@ -141,8 +203,8 @@ const Wholesellers = () => {
         {isModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-white py-6 px-12 rounded shadow-lg w-96">
-              <h2 className="text-lg font-bold mb-4 text-center">
-                Add a New Wholesellers
+              <h2 className="text-xl font-bold text-center mb-4">
+                {isEditMode ? "Edit Wholesaler" : "Add New Wholesaler"}
               </h2>
 
               {/* form start */}
@@ -171,6 +233,15 @@ const Wholesellers = () => {
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                   />
+                  {isEditMode && (
+                    <input
+                      type="text"
+                      placeholder="toPay"
+                      className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                      value={toPay}
+                      onChange={(e) => setToPay(e.target.value)}
+                    />
+                  )}
                   <br />
                   <input
                     type="text"
@@ -190,7 +261,7 @@ const Wholesellers = () => {
                       type="submit"
                       className="bg-green-800 text-white px-4 py-2 rounded"
                     >
-                      Add
+                      {isEditMode ? "Update" : "Add"}
                     </button>
                   </div>
                 </form>
@@ -245,10 +316,16 @@ const Wholesellers = () => {
                         <MdDelete
                           size={20}
                           className="text-red-600 cursor-pointer"
+                          onClick={() => {
+                            deleteWholesaler(wholeSeller.panNo);
+                          }}
                         />
                         <FaEdit
                           size={20}
                           className="text-green-700 cursor-pointer"
+                          onClick={() => {
+                            handleEdit(wholeSeller.panNo);
+                          }}
                         />
                       </p>
                     </td>

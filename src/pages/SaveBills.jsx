@@ -19,6 +19,7 @@ const SaveBills = () => {
     const today = new Date().toISOString().split("T")[0];
     return today;
   });
+
   const [panNo, setPanNo] = useState("");
   const [billNo, setBillNO] = useState("");
   const [isPaid, setIsPaid] = useState(false);
@@ -72,6 +73,8 @@ const SaveBills = () => {
         setPaidAmount("");
         setTotalAmount("");
         setSelectedImage(null);
+        setLoading(false);
+        setIsModelOpen(false);
       }
     } catch (error) {
       console.error("Error adding bill:", error);
@@ -107,7 +110,7 @@ const SaveBills = () => {
   };
 
   //DELETE Bills
-  const deleteBills = async (BillId) => {
+  const deleteBill = async (BillId) => {
     setLoading(true);
     try {
       const token = localStorage.getItem("authToken");
@@ -116,10 +119,11 @@ const SaveBills = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      setBills(bills.filter((bill) => bill.BillId !== BillId));
       setLoading(false);
+      setBills(bills.filter((bill) => bill.BillId !== BillId));
     } catch (error) {
       console.error("Error deleting customer:", error);
+      setLoading(false);
     }
   };
 
@@ -309,6 +313,9 @@ const SaveBills = () => {
                       <MdDelete
                         size={20}
                         className="text-red-600 cursor-pointer"
+                        onClick={() => {
+                          deleteBill(bills.billId);
+                        }}
                       />
                       <FaEdit
                         size={20}

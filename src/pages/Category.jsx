@@ -17,9 +17,11 @@ const Category = () => {
   const [categories, setCategories] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [categoryId, setCategoryId] = useState("");
+  const [isEditMode, setIsEditMode] = useState(false);
 
   //Add Category
   const handleCategoryAdd = async (e) => {
+    setLoading(true);
     e.preventDefault();
     if (!categoryName) {
       toast.error("Category Name is Required");
@@ -27,22 +29,38 @@ const Category = () => {
     }
     try {
       const token = localStorage.getItem("authToken");
-      const response = await axios.post(
-        "https://localhost:7287/api/Category",
-        { categoryName },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      if (isEditMode) {
+        const response = await axios.put(
+          `https://localhost:7287/api/Category`,
+          { categoryName, categoryId },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setLoading(false);
+        toast.success(response?.data?.message);
+      } else {
+        const response = await axios.post(
+          "https://localhost:7287/api/Category",
+          { categoryName },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-      if (response.status === 200) {
-        toast.success("Category added successfully.");
+        setLoading(false);
+        toast.success(response?.data?.message);
         setIsModalOpenCategory(false);
+        setLoading(false);
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "An error occurred!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -60,6 +78,7 @@ const Category = () => {
         },
       });
       setCategories(response?.data?.data);
+      setLoading(false);
     } catch (error) {
       toast.error("Error fetching category:", error.response || error.message);
       if (error.response?.status === 400) {
@@ -90,44 +109,17 @@ const Category = () => {
       setLoading(false);
     } catch (error) {
       toast.error("Error deleting customer:", error);
-    }
-  };
-
-  //UPDATE Category
-  const handleCategoryUpdate = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    if (!categoryName) {
-      toast.error("Category Name is Required");
-      return;
-    }
-
-    try {
-      const token = localStorage.getItem("authToken");
-      const response = await axios.put(
-        `https://localhost:7287/api/Category/${categoryId}`,
-        { categoryName },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.status === 200) {
-        toast.success("Category updated successfully.");
-        setIsEditCategory(false);
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "An error occurred!");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleEditClick = (category) => {
-    setCategoryId(category?.categoryId);
-    setCategoryName(category?.categoryName);
-    setIsEditCategory(true);
+  const handleEdit = (categoryId) => {
+    setIsEditMode(true);
+    setIsModalOpenCategory(true);
+    const category = categories.find((c) => c.categoryId === categoryId);
+    setCategoryName(category.categoryName);
+    setCategoryId(category.categoryId);
   };
 
   useEffect(() => {
@@ -165,10 +157,10 @@ const Category = () => {
       {isModalOpenCategory && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded shadow-lg ">
-            <h2 className="text-lg font-bold mb-4 text-center">
-              Add a New Category
+            <h2 className="text-xl font-bold text-center mb-4">
+              {isEditMode ? "Edit Catgory" : "Add New Category"}
             </h2>
-            <form action="" onSubmit={handleCategoryAdd}>
+            <form onSubmit={handleCategoryAdd}>
               <input
                 type="text"
                 name="categoryName"
@@ -190,7 +182,7 @@ const Category = () => {
                   type="submit"
                   className="bg-green-600 text-white px-4 py-2 rounded"
                 >
-                  Add
+                  {isEditMode ? "Update" : "Add"}
                 </button>
               </div>
             </form>
@@ -226,7 +218,9 @@ const Category = () => {
                         }}
                       />
                       <FaEdit
-                        onClick={() => handleEditClick(category)}
+                        onClick={() => {
+                          handleEdit(category.categoryId);
+                        }}
                         size={20}
                         className="text-green-700 cursor-pointer"
                       />

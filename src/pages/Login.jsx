@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import  { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -32,8 +32,7 @@ function Login() {
           password,
         }
       );
-
-      //console.log(response.data)
+      setLoading(false);
 
       if (response.status === 200) {
         toast.success("User Login successfully.");
@@ -46,12 +45,14 @@ function Login() {
         }, 1000);
       }
     } catch (error) {
+      toast.error(error?.data?.message)
       if (
         error.response &&
-        error.response.data.message &&
         error.response.data.message
       ) {
-        toast.error(error.response.data.error);
+        const message = error.response.data.message || "An error occured";
+        toast.error(message)
+        setLoading(false)
       } else {
         toast.error("An error occured!");
       }
@@ -94,7 +95,7 @@ function Login() {
 
           <button
             type="submit"
-            className="bg-green-500 mb-4 px-2 py-2 w-full lg:w-[20em] rounded-lg text-white placeholder:text-gray-500 outline-none hover:bg-green-700 required focus:bg-gray-100 focus:border-blue-700 focus:outline-style: solid ;"
+            className="bg-green-500 mb-4 px-2 py-2 w-full lg:w-[20em] rounded-lg text-white placeholder:text-gray-500 outline-none hover:bg-green-700 required ;"
           >
             Login
           </button>
