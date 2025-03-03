@@ -11,6 +11,7 @@ const Chart = () => {
         series={[
           {
             data: [2, 5.5, 2, 8.5, 1.5, 5],
+            color: "green",
           },
         ]}
         width={500}
@@ -27,6 +28,7 @@ const Chart = () => {
         series={[
           {
             data: [2, 5, 3],
+            color: "blue",
           },
         ]}
         width={500}
@@ -37,6 +39,7 @@ const Chart = () => {
         series={[
           {
             data: [2, 5.5, 2, 8.5, 1.5, 5],
+            color: "red",
           },
         ]}
         width={500}

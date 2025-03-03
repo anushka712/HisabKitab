@@ -1,18 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useState, useEffect } from "react";
 import { FaSearch, FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import axios from "axios";
 import { Box, Container, Button, Typography } from "@mui/material";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
-import CustomerEdit from "../Edit/CustomerEdit";
 
 const Customer = () => {
   const [openQR, setOpenQR] = useState(false);
-  const [selectedCustomerId, setSelectedCustomerId] = useState(null);
+  
 
   const [customers, setCustomers] = useState([]);
+  const [customerId, setCustomerId] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [cPanNo, setCPanNo] = useState("");
+  const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,54 +24,56 @@ const Customer = () => {
   const [isModalOpen, setIsModelOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
 
-  //Form data
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm();
-
   //POST customers
-  const postCustomers = async (data) => {
+  const postCustomers = async (e) => {
+    e.preventDefault();
     setLoading(true);
     try {
       const token = localStorage.getItem("authToken");
 
       if (isEditMode) {
-        await axios.put(
+        const response = await axios.put(
           "https://localhost:7287/api/Customer",
           {
-            customerId: data.customerId, 
-            phoneNumber: data.phoneNumber,
-            email: data.email,
-            address: data.address,
-            customerName:data.customerName,
-            cPanNo: data.cPanNo,
-          },        
+            customerId,
+            phoneNumber,
+            email,
+            address,
+            customerName,
+            cPanNo,
+          },
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-
-        toast.success("Customer updated successfully");
+        toast.success(response?.data?.message);
         setLoading(false);
+        setIsModelOpen(false);
       } else {
-        await axios.post("https://localhost:7287/api/Customer", data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        toast.success("Customer data submitted successfully!");
+        const response = await axios.post(
+          "https://localhost:7287/api/Customer",
+          { customerName, phoneNumber, email, address, cPanNo },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        toast.success(response?.data?.message);
+        setLoading(false);
+        setIsModelOpen(false);
+        setCustomerName("");
+        setPhoneNumber("");
+        setEmail("");
+        setAddress("");
+        setCPanNo("cPanNo", "12");
       }
-
-      setIsModelOpen(false);
     } catch (error) {
-      toast.error("An error occurred while submitting the form.");
+      toast.error(error?.response?.data?.message);
       console.error(error);
-    } finally {
+    }finally{
       setLoading(false);
     }
   };
@@ -131,12 +137,12 @@ const Customer = () => {
     console.log(customer);
     setIsModelOpen(true);
     setIsEditMode(true);
-    setValue("customerId", customer?.customerId);
-    setValue("customerName", customer?.customerName);
-    setValue("phoneNumber", customer?.phoneNumber);
-    setValue("email", customer?.email);
-    setValue("address", customer?.address);
-    setValue("cPanNo", "12");
+    setCustomerId(customer?.customerId);
+    setCustomerName(customer?.customerName);
+    setPhoneNumber(customer?.phoneNumber);
+    setEmail(customer?.email);
+    setAddress(customer?.address);
+    setCPanNo("12");
   };
 
   return (
@@ -147,7 +153,7 @@ const Customer = () => {
 
       <Container>
         <Box>
-          <h2 className="mt-8 text-2xl text-center font-bold">Customers</h2>
+          <h2 className="text-xl text-slate-800 text-center mb-2">Customers</h2>
           <div className=" flex justify-between">
             <div className="flex items-center justify-between border border-gray-300 rounded-md px-2 w-64 my-2 ">
               <input
@@ -180,105 +186,65 @@ const Customer = () => {
                 <h2 className="text-xl font-bold text-center mb-4">
                   {isEditMode ? "Edit Customer" : "Add New Customer"}
                 </h2>
-                <form onSubmit={handleSubmit(postCustomers)}>
-                  <input
-                    type="text"
-                    placeholder="Customer Name"
-                    className="w-full border border-gray-300 px-3 py-1 rounded mb-2"
-                    {...register("customerName", {
-                      required: "Customer Name is required",
-                    })}
-                  />
-                  {errors.customerName && (
-                    <p className="text-red-500 text-sm">
-                      {errors.customerName.message}
-                    </p>
-                  )}
+                {/* form start */}
+                <div>
+                  <form onSubmit={postCustomers}>
+                    <input
+                      type="text"
+                      className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                      placeholder="Enter the Customer Name"
+                      value={customerName}
+                      onChange={(e) => setCustomerName(e.target.value)}
+                    />
+                    <br />
 
-                  <input
-                    type="text"
-                    placeholder="Phone Number"
-                    className="w-full border border-gray-300 px-3 py-1 rounded mb-2"
-                    {...register("phoneNumber", {
-                      required: "Phone Number is required",
-                      pattern: {
-                        value: /^[0-9]{10}$/,
-                        message: "Phone Number must be 10 digits",
-                      },
-                    })}
-                  />
-                  {errors.phoneNumber && (
-                    <p className="text-red-500 text-sm">
-                      {errors.phoneNumber.message}
-                    </p>
-                  )}
-
-                  {/* Show PAN No only when NOT in edit mode */}
-                  
-                    <>
-                      <input
-                        type="text"
-                        placeholder="PAN No"
-                        className="w-full border border-gray-300 px-3 py-1 rounded mb-2"
-                        {...register("cPanNo", {
-                          required: "PAN Number is required",
-                        })}
-                      />
-                      {errors.cPanNo && (
-                        <p className="text-red-500 text-sm">
-                          {errors.cPanNo.message}
-                        </p>
-                      )}
-                    </>
-               
-
-                  <input
-                    type="email"
-                    placeholder="Email"
-                    className="w-full border border-gray-300 px-3 py-1 rounded mb-2"
-                    {...register("email", {
-                      required: "Email is required",
-                      pattern: {
-                        value: /^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/,
-                        message: "Enter a valid email address",
-                      },
-                    })}
-                  />
-                  {errors.email && (
-                    <p className="text-red-500 text-sm">
-                      {errors.email.message}
-                    </p>
-                  )}
-
-                  <input
-                    placeholder="Address"
-                    className="w-full border border-gray-300 px-3 py-1 rounded mb-2"
-                    {...register("address", {
-                      required: "Address is required",
-                    })}
-                  />
-                  {errors.address && (
-                    <p className="text-red-500 text-sm">
-                      {errors.address.message}
-                    </p>
-                  )}
-
-                  <div className="flex justify-end space-x-2 mt-4">
-                    <button
-                      type="button"
-                      onClick={() => setIsModelOpen(false)}
-                      className="bg-red-500 text-white px-4 py-2 rounded"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className="bg-green-600 text-white px-4 py-2 rounded"
-                    >
-                      {isEditMode ? "Update" : "Add"}
-                    </button>
-                  </div>
-                </form>
+                    <input
+                      type="text"
+                      placeholder="Address"
+                      className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                    />
+                    <br />
+                    <input
+                      type="text"
+                      placeholder="email"
+                      className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <br />
+                    <input
+                      type="text"
+                      placeholder="Enter Phone Number"
+                      className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                    />
+                    <br />
+                    <input
+                      type="text"
+                      placeholder="Pan No:"
+                      className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                      value={cPanNo}
+                      onChange={(e) => setCPanNo(e.target.value)}
+                    />
+                    <div className="flex justify-end space-x-2 mt-4">
+                      <button
+                        onClick={() => setIsModelOpen(false)}
+                        className="bg-red-500 px-4 py-2 rounded text-white"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="bg-green-800 text-white px-4 py-2 rounded"
+                      >
+                        {isEditMode ? "Update" : "Add"}
+                      </button>
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
           )}
@@ -331,22 +297,20 @@ const Customer = () => {
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
                         <div className="flex items-center gap-2">
-                          <div>
-                            <MdDelete
-                              size={20}
-                              className="text-red-600 cursor-pointer"
-                              onClick={() => {
-                                deleteCustomer(customer.customerId);
-                              }}
-                            />
-                            <FaEdit
-                              size={20}
-                              className="text-green-700 cursor-pointer"
-                              onClick={() => {
-                                handleEdit(customer.customerId);
-                              }}
-                            />
-                          </div>
+                          <MdDelete
+                            size={20}
+                            className="text-red-600 cursor-pointer"
+                            onClick={() => {
+                              deleteCustomer(customer.customerId);
+                            }}
+                          />
+                          <FaEdit
+                            size={20}
+                            className="text-green-700 cursor-pointer"
+                            onClick={() => {
+                              handleEdit(customer.customerId);
+                            }}
+                          />
                         </div>
                       </td>
                     </tr>

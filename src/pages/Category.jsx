@@ -13,7 +13,6 @@ const Category = () => {
   const [categoryName, setCategoryName] = useState("");
   const [loading, setLoading] = useState(false);
   const [isModalOpenCategory, setIsModalOpenCategory] = useState(false);
-  const [isEditCategory, setIsEditCategory] = useState(false);
   const [categories, setCategories] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [categoryId, setCategoryId] = useState("");
@@ -41,6 +40,7 @@ const Category = () => {
         );
         setLoading(false);
         toast.success(response?.data?.message);
+        setIsModalOpenCategory(false);
       } else {
         const response = await axios.post(
           "https://localhost:7287/api/Category",
@@ -131,7 +131,7 @@ const Category = () => {
       <div className="p-4">
         {loading ? <Loader /> : <p className="text-lg font-semibold"></p>}
       </div>
-      <h2 className="mt-8 text-2xl text-center font-bold">Category</h2>
+      <h2 className="text-xl text-slate-800 text-center mb-2">Category</h2>
 
       <div className="flex justify-between">
         <div className="flex items-center border border-gray-300 rounded-md px-2 w-64 my-2">
@@ -146,7 +146,7 @@ const Category = () => {
           </button>
         </div>
         <button
-          className="bg-green-600 text-white px-2 py-1 rounded-lg ml-4"
+          className="bg-green-600 text-white px-2 py-1 rounded-lg mb-3"
           onClick={() => setIsModalOpenCategory(true)}
         >
           Add Category
@@ -241,43 +241,6 @@ const Category = () => {
           </tbody>
         </table>
       </div>
-
-      {/* Edit Category */}
-      {isEditCategory && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded shadow-lg ">
-            <h2 className="text-lg font-bold mb-4 text-center">
-              Update Category
-            </h2>
-            <form action="" onSubmit={handleCategoryUpdate}>
-              <input
-                type="text"
-                name="categoryName"
-                value={categoryName}
-                onChange={(e) => setCategoryName(e.target.value)}
-                className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
-                placeholder="Enter the Category Name"
-              />
-              <br />
-
-              <div className="flex justify-end space-x-2">
-                <button
-                  onClick={() => setIsEditCategory(false)}
-                  className="bg-red-500 px-4 py-2 rounded text-white"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="bg-green-600 text-white px-4 py-2 rounded"
-                >
-                  Update
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       <Box
         sx={{

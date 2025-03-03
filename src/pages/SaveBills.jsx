@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { FaSearch, FaEdit } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import axios from "axios";
 import Loader from "../components/Loader";
 import { Box, Typography, Button } from "@mui/material";
@@ -308,18 +308,14 @@ const SaveBills = () => {
                   <td className="border border-gray-300 p-2">
                     {bills.totalAmount}
                   </td>
-                  <td className="border border-gray-300 p-2">
-                    <p className="flex gap-2">
+                  <td className="border border-gray-300 p-2 ">
+                    <p className="h-full flex justify-center">
                       <MdDelete
                         size={20}
                         className="text-red-600 cursor-pointer"
                         onClick={() => {
                           deleteBill(bills.billId);
                         }}
-                      />
-                      <FaEdit
-                        size={20}
-                        className="text-green-700 cursor-pointer"
                       />
                     </p>
                   </td>

@@ -13,12 +13,8 @@ const Stock = () => {
   //console.log(data);
   const [isModalOpenStock, setIsModalOpenStock] = useState(false);
   const [isModalOpenCategory, setIsModalOpenCategory] = useState(false);
-  const [categories, setCategories] = useState("");
-
-  const [categoryName, setCategoryName] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  const navigate = useNavigate();
 
   //Priduct items
   const [products, setProducts] = useState([]);
@@ -41,39 +37,6 @@ const Stock = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
   const [isEditMode, setIsEditMode] = useState(false);
-
-  //Add Category
-  const handleCategoryAdd = async (e) => {
-    setLoading(true);
-    e.preventDefault();
-    if (!categoryName) {
-      toast.error("Category Name is Required");
-      return;
-    }
-    try {
-      const token = localStorage.getItem("authToken");
-      const response = await axios.post(
-        "https://localhost:7287/api/Category",
-        { categoryName },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setLoading(false);
-
-      if (response.status === 200) {
-        toast.success("Category added successfully.");
-        setIsModalOpenCategory(false);
-        setLoading(false);
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "An error occurred!");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   //Get Category
   const getCategory = async (searchQuery) => {
@@ -117,6 +80,7 @@ const Stock = () => {
       return;
     }
     try {
+      setLoading(true);
       const token = localStorage.getItem("authToken");
       if (isEditMode) {
         const response = await axios.put(
@@ -126,7 +90,7 @@ const Stock = () => {
             productId,
             unit,
             salesPrice,
-            categoryName,
+            categoryName: selectedCategory,
             purchasePrice,
             openStock,
             lowStock,
@@ -249,7 +213,7 @@ const Stock = () => {
     setLowStock(product.lowStock);
     setFromDate(product.fromDate);
     setItemLocation(product.itemLocation);
-    setCategoryName("TRY");
+    setSelectedCategory(product.categoryName);
     setProductId(product.productId);
   };
 
@@ -263,7 +227,7 @@ const Stock = () => {
       <div className="p-4">
         {loading ? <Loader /> : <p className="text-lg font-semibold"></p>}
       </div>
-      <h2 className="mt-8 text-2xl text-center font-bold">Stock</h2>
+      <h2 className="text-xl text-slate-800 text-center mb-2">Stock</h2>
       <div className="flex justify-between ">
         <div className="flex items-center border border-gray-300 rounded-md px-2 w-64 my-2">
           <input
@@ -284,12 +248,6 @@ const Stock = () => {
           >
             Add Products
           </button>
-          <button
-            className="bg-green-600 text-white px-2 py-1 rounded-lg ml-4"
-            onClick={() => setIsModalOpenCategory(true)}
-          >
-            Add Category
-          </button>
 
           {/* //For Products */}
           {isModalOpenStock && (
@@ -308,20 +266,25 @@ const Stock = () => {
                   />
                   <br />
 
-                  {!isEditMode && (
-                    <select
-                      value={selectedCategory}
-                      onChange={(e) => setSelectedCategory(e.target.value)}
-                      className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
-                    >
-                      <option value="">Select a category</option>
-                      {categories.map((category) => (
-                        <option key={category.id} value={category.categoryId}>
-                          {category.categoryName}
-                        </option>
-                      ))}
-                    </select>
-                  )}
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                  >
+                    <option value="">Select a category</option>
+                    {categories.map((category) => (
+                      <option
+                        key={category.id}
+                        value={
+                          isEditMode
+                            ? category.categoryName
+                            : category.categoryId
+                        }
+                      >
+                        {category.categoryName}
+                      </option>
+                    ))}
+                  </select>
 
                   <input
                     type="text"
@@ -355,33 +318,33 @@ const Stock = () => {
                     className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
                   />
                   <br />
-                  <input
-                    type="date"
-                    value={fromDate}
-                    onChange={(e) => setFromDate(e.target.value)}
-                    placeholder="Date"
-                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
-                  />
-                  <br />
-
                   {!isEditMode && (
-                    <input
-                      type="date"
-                      value={expiryDate}
-                      onChange={(e) => setExpiryDate(e.target.value)}
-                      placeholder="Date"
-                      className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
-                    />
+                    <>
+                      {" "}
+                      <input
+                        type="date"
+                        value={fromDate}
+                        onChange={(e) => setFromDate(e.target.value)}
+                        placeholder="Date"
+                        className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                      />
+                      <br />
+                    </>
                   )}
 
-                  <input
-                    type="number"
-                    value={salesPrice}
-                    onChange={(e) => setSalesPrice(e.target.value)}
-                    placeholder="Sales Price"
-                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
-                  />
-                  <br />
+                  {!isEditMode && (
+                    <>
+                      <input
+                        type="date"
+                        value={expiryDate}
+                        onChange={(e) => setExpiryDate(e.target.value)}
+                        placeholder="Date"
+                        className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                      />
+                      <br />
+                    </>
+                  )}
+
                   <input
                     type="number"
                     value={purchasePrice}
@@ -389,6 +352,14 @@ const Stock = () => {
                     placeholder="Purchase  Price"
                     className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
                   />
+                  <input
+                    type="number"
+                    value={salesPrice}
+                    onChange={(e) => setSalesPrice(e.target.value)}
+                    placeholder="Sales Price"
+                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
+                  />
+
                   <div className="flex justify-end space-x-2 mt-4">
                     <button
                       onClick={() => setIsModalOpenStock(false)}
@@ -407,43 +378,6 @@ const Stock = () => {
               </div>
             </div>
           )}
-
-          {/* //For Category */}
-          {isModalOpenCategory && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-              <div className="bg-white p-6 rounded shadow-lg ">
-                <h2 className="text-lg font-bold mb-4 text-center">
-                  Add a New Category
-                </h2>
-                <form action="" onSubmit={handleCategoryAdd}>
-                  <input
-                    type="text"
-                    name="categoryName"
-                    value={categoryName}
-                    onChange={(e) => setCategoryName(e.target.value)}
-                    className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
-                    placeholder="Enter the Category Name"
-                  />
-                  <br />
-
-                  <div className="flex justify-end space-x-2">
-                    <button
-                      onClick={() => setIsModalOpenCategory(false)}
-                      className="bg-red-500 px-4 py-2 rounded text-white"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className="bg-green-600 text-white px-4 py-2 rounded"
-                    >
-                      Add
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )}
         </div>
       </div>
       {/* GET Products */}
@@ -451,10 +385,13 @@ const Stock = () => {
         <table className="w-full text-sm text-left">
           <thead className="text-xs border border-gray-600 uppercase">
             <tr>
+              <th className="border border-gray-300 p-2 text-left">FromDate</th>
               <th className="border border-gray-300 p-2 py-4 text-left">
                 Category Name
               </th>
-              <th className="border border-gray-300 p-2 text-left">fromDate</th>
+              <th className="border border-gray-300 p-2 text-left">
+                Product Name
+              </th>
               <th className="border border-gray-300 p-2 text-left">
                 Item Location
               </th>
@@ -464,9 +401,7 @@ const Stock = () => {
               <th className="border border-gray-300 p-2 text-left">
                 Open Stock
               </th>
-              <th className="border border-gray-300 p-2 text-left">
-                Product Name
-              </th>
+
               <th className="border border-gray-300 p-2 text-left">
                 Purchase Price
               </th>
@@ -482,11 +417,15 @@ const Stock = () => {
               products?.map((product) => (
                 <tr key={product.id} className="odd:bg-white even:bg-gray-100">
                   <td className="border border-gray-300 p-2">
+                    {new Date(product.fromDate).toISOString().split("T")[0]}
+                  </td>
+                  <td className="border border-gray-300 p-2">
                     {product.categoryName}
                   </td>
                   <td className="border border-gray-300 p-2">
-                    {new Date(product.fromDate).toISOString().split("T")[0]}
+                    {product.productName}
                   </td>
+
                   <td className="border border-gray-300 p-2">
                     {product.itemLocation}
                   </td>
@@ -496,9 +435,7 @@ const Stock = () => {
                   <td className="border border-gray-300 p-2">
                     {product.openStock}
                   </td>
-                  <td className="border border-gray-300 p-2">
-                    {product.productName}
-                  </td>
+
                   <td className="border border-gray-300 p-2">
                     {product.purchasePrice}
                   </td>

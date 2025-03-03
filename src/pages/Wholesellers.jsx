@@ -176,7 +176,7 @@ const Wholesellers = () => {
         <div className="p-4">
           {loading ? <Loader /> : <p className="text-lg font-semibold"></p>}
         </div>
-        <h2 className="mt-8 text-2xl text-center font-bold">Wholesalers</h2>
+        <h2 className="text-xl text-slate-800 text-center mb-2">Wholesalers</h2>
         <div className=" flex justify-between">
           <div className="flex items-center justify-between border border-gray-300 rounded-md px-2 w-64 my-2 ">
             <input

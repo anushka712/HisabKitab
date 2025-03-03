@@ -24,7 +24,7 @@ const Animated = () => {
                 </div>
 
                <div>
-                <img src="/main.jpg" alt="no img"  className='rounded-lg'/>
+                <img src="/hisab.png" alt="no img"  className='rounded-lg'/>
                 </div>
        
     </div>

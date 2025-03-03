@@ -16,11 +16,11 @@ function Features() {
         className="grid md:grid-cols-2   h-[400px] md:[h-400px] "
       >
         <div className=" flex justify-center items-center">
-          <img src="/hisab.png" alt="" className="h-1/2" />
+          <img src="/inventory.png" alt="" className="h-1/2" />
         </div>
         <div className=" flex flex-col justify-center items-center">
           <p className="text-center font-bold text-3xl pb-4">
-            Business on <span className="text-green-600"> Your Mobile</span>
+            Manage <span className="text-green-600"> Inventory</span>
           </p>
           <p className="text-center text-gray-800 text-xl">
             With HisabKitab app you can manage all your business accounting from
@@ -52,11 +52,11 @@ function Features() {
         className="grid grid-cols-1 md:grid-cols-2   h-[400px] md:[h-400px]  "
       >
         <div className=" flex justify-center items-center">
-          <img src="/inventory.png" alt="" className="h-1/2" />
+          <img src="/hisab.png" alt="" className="h-1/2" />
         </div>
         <div className=" flex flex-col justify-center items-center">
           <p className="text-center font-bold text-3xl pb-4">
-            Manage <span className="text-green-600"> Inventory</span>
+            Business on <span className="text-green-600"> Your Mobile</span>
           </p>
           <p className="text-center text-gray-800 text-xl">
             Maintain your business inventory easily with Karobar app and know

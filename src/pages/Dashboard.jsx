@@ -1,20 +1,17 @@
-import React from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { AiFillDashboard } from "react-icons/ai";
-import { IoMdLogOut } from "react-icons/io";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { FaRegNewspaper } from "react-icons/fa";
 import { RiStockFill } from "react-icons/ri";
 import { toast } from "react-toastify";
 import { FaUserGroup } from "react-icons/fa6";
-import { FaUserAlt } from "react-icons/fa";
 import { FaUsers } from "react-icons/fa";
 import { TbCategory } from "react-icons/tb";
 import UserMenu from "../components/UserMenu";
 
 const Dashboard = () => {
   const location = useLocation();
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
 
   const links = [
     {
@@ -46,7 +43,6 @@ const Dashboard = () => {
       label: "Category",
       icon: TbCategory,
     },
-    
   ];
 
   const handleLogout = () => {
@@ -65,7 +61,6 @@ const Dashboard = () => {
       <div className="flex flex-col md:flex-row ">
         {/* Sidebar */}
         <div className="text-white bg-black  md:h-screen md:fixed md:w-[20%] pl-2">
-          
           <ul className="mt-4">
             {links.map(({ path, label, icon: Icon }) =>
               label === "Logout" ? (
