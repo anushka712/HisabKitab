@@ -13,11 +13,10 @@ const SalesBill = () => {
     return today;
   });
   const [totalAmount, setTotalAmount] = useState("");
-  const [totalQuantity, setTotalQuantity] = useState("");
+  const [totalQuantity, setTotalQuantity] = useState(0);
   const [payMode, setPayMode] = useState("");
   const [receivedAmount, setReceivedAmount] = useState("");
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
-
 
   const [salesId, setSalesId] = useState(null);
 
@@ -30,7 +29,7 @@ const SalesBill = () => {
       productName: "",
       quantity: "",
       rate: "",
-      discount: "",
+      discount: "1",
       discountAmount: "",
     },
   ]);
@@ -91,27 +90,33 @@ const SalesBill = () => {
   }, []);
 
   // Handle changes for the form fields
-  const handleProductChange = (index, e) => {
-    const { name, value } = e.target;
-    const updatedProducts = [...products];
+ const handleProductChange = (index, event) => {
+   const { name, value } = event.target;
+   setProducts((prevProducts) => {
+     const updatedProducts = [...prevProducts];
+     updatedProducts[index] = {
+       ...updatedProducts[index],
+       [name]: value,
+     };
 
-    if (name === "productId") {
-      // Find the product based on selected productId
-      const selectedProduct = availableProducts.find(
-        (product) => product.productId === value
-      );
+     // Set rate and productName when product is selected
+     if (name === "productId") {
+       const selectedProduct = availableProducts.find(
+         (product) => product.productId === value
+       );
+       updatedProducts[index].rate = selectedProduct
+         ? selectedProduct.salesPrice
+         : "";
+       updatedProducts[index].productName = selectedProduct
+         ? selectedProduct.productName
+         : ""; // Set product name
+     }
 
-      // Update productId and productName
-      updatedProducts[index][name] = value;
-      updatedProducts[index].productName = selectedProduct
-        ? selectedProduct.productName
-        : "";
-    } else {
-      updatedProducts[index][name] = value;
-    }
+     return updatedProducts;
+   });
+ };
 
-    setProducts(updatedProducts);
-  };
+
 
   // Add new product row to the form
   const handleAddProduct = () => {
@@ -122,11 +127,19 @@ const SalesBill = () => {
         productName: "",
         quantity: "",
         rate: "",
-        discount: "",
+        discount: "1",
         discountAmount: "",
       },
     ]);
   };
+
+  useEffect(() => {
+    const total = products.reduce(
+      (acc, product) => acc + Number(product.quantity || 0),
+      0
+    );
+    setTotalQuantity(total);
+  }, [products]);
 
   //Add Bill
   const handleSubmit = async (e) => {
@@ -332,112 +345,95 @@ const SalesBill = () => {
                 {isModelOpen && (
                   <div className="mt-4">
                     <div className="mb-4">
-                      <div className="grid grid-cols-6">
-                        {/* Static Headings for the first time */}
-                        <div className="col-span-2">
-                          <label className="block mb-1 font-semibold text-slate-900">
-                            Product
-                          </label>
-                        </div>
-                        <div>
-                          <label className="block mb-1">Quantity</label>
-                        </div>
-                        <div>
-                          <label className="block mb-1">
-                            Rate (Sales Price)
-                          </label>
-                        </div>
-                        <div>
-                          <label className="block mb-1">Discount Percent</label>
-                        </div>
-                        <div>
-                          <label className="block mb-1">Discount Amount</label>
-                        </div>
-                      </div>
-
                       {/* Products Inputs */}
                       {products.map((product, index) => (
-                        <div key={index} className="mb-1">
-                          <div className="grid grid-cols-6  gap-2">
-                            {/* Product Name */}
-                            <div className="col-span-2">
-                              <select
-                                className="border border-gray-300 rounded px-3 py-1 w-full text-gray-800"
-                                name="productId"
-                                value={product.productId}
-                                onChange={(e) => handleProductChange(index, e)}
-                              >
-                                <option value="" className="text-gray-400">
-                                  Select a product
+                        <div key={index} className="mb-4 flex w-full gap-6">
+                          {/* Product Name */}
+                          <div className="mb-4 w-full">
+                            <label className="block text-sm font-semibold text-slate-900 mb-1">
+                              Product
+                            </label>
+                            <select
+                              className="border border-gray-300 rounded px-3 py-2 w-full text-gray-800 focus:ring-2 focus:ring-blue-500"
+                              name="productId"
+                              value={product.productId}
+                              onChange={(e) => handleProductChange(index, e)}
+                            >
+                              <option value="" className="text-gray-400">
+                                Select a product
+                              </option>
+                              {availableProducts.map((availableProduct) => (
+                                <option
+                                  key={availableProduct.productId}
+                                  value={availableProduct.productId}
+                                >
+                                  {availableProduct.productName} -{" "}
+                                  {availableProduct.salesPrice}
                                 </option>
-                                {availableProducts.map((availableProduct) => (
-                                  <option
-                                    key={availableProduct.productId}
-                                    value={availableProduct.productId}
-                                  >
-                                    {availableProduct.productName} -{" "}
-                                    {availableProduct.salesPrice}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
+                              ))}
+                            </select>
+                          </div>
 
-                            {/* Quantity */}
-                            <div>
+                          {/* Sales Price (Only shown after product selection) */}
+                          {product.productId && (
+                            <div className="mb-4 w-full">
+                              {/* Display 'Price: ' label */}
+                              <label className="block text-sm font-semibold text-slate-900 mb-1">
+                                Price:
+                              </label>
                               <input
-                                type="number"
-                                name="quantity"
-                                placeholder="Enter Quantity"
-                                value={product.quantity}
-                                onChange={(e) => handleProductChange(index, e)}
-                                className="border border-gray-300 rounded px-3 py-1 w-full"
+                                type="text"
+                                value={
+                                  availableProducts.find(
+                                    (availableProduct) =>
+                                      availableProduct.productId ===
+                                      product.productId
+                                  )?.salesPrice || ""
+                                }
+                                className="border border-gray-300 rounded px-3 py-2 w-full bg-gray-100 text-gray-600"
+                                readOnly
                               />
                             </div>
+                          )}
 
-                            {/* Rate (Sales Price) */}
-                            <div>
-                              <input
-                                type="number"
-                                name="rate"
-                                placeholder="Enter Rate"
-                                value={product.rate}
-                                onChange={(e) => handleProductChange(index, e)}
-                                className="border border-gray-300 rounded px-3 py-1 w-full"
-                              />
-                            </div>
+                          {/* Quantity */}
+                          <div className="mb-4 w-full">
+                            <label className="block text-sm font-semibold text-slate-900 mb-1">
+                              Quantity
+                            </label>
+                            <input
+                              type="number"
+                              name="quantity"
+                              placeholder="Enter Quantity"
+                              value={product.quantity}
+                              onChange={(e) => handleProductChange(index, e)}
+                              className="border border-gray-300 rounded px-3 py-2 w-full focus:ring-2 focus:ring-blue-500"
+                            />
+                          </div>
 
-                            {/* Discount */}
-                            <div>
-                              <input
-                                type="number"
-                                name="discount"
-                                placeholder="Discount Percent"
-                                value={product.discount}
-                                onChange={(e) => handleProductChange(index, e)}
-                                className="border border-gray-300 rounded px-3 py-1 w-full"
-                              />
-                            </div>
-
-                            {/* Discount Amount */}
-                            <div>
-                              <input
-                                type="number"
-                                placeholder="Enter Discount Amount"
-                                name="discountAmount"
-                                value={product.discountAmount}
-                                onChange={(e) => handleProductChange(index, e)}
-                                className="border border-gray-300 rounded px-3 py-1 w-full"
-                              />
-                            </div>
+                          {/* Discount Amount */}
+                          <div className="mb-4 w-full">
+                            <label className="block text-sm font-semibold text-slate-900 mb-1">
+                              Discount Amount
+                            </label>
+                            <input
+                              type="number"
+                              placeholder="Enter Discount Amount"
+                              name="discountAmount"
+                              value={product.discountAmount}
+                              onChange={(e) => handleProductChange(index, e)}
+                              className="border border-gray-300 rounded px-3 py-2 w-full focus:ring-2 focus:ring-blue-500"
+                            />
                           </div>
                         </div>
                       ))}
 
-                      <div className="flex justify-end">
+                      {/* Add Another Product Button */}
+                      <div className="flex justify-end mt-4">
                         <button
                           type="button"
                           onClick={handleAddProduct}
-                          className="bg-green-600 text-white px-4 py-2 rounded mt-4"
+                          className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 focus:ring-4 focus:ring-green-500 transition"
                         >
                           Add Another Product
                         </button>
@@ -452,8 +448,8 @@ const SalesBill = () => {
                     placeholder="Total Quantity"
                     name="totalQuantity"
                     value={totalQuantity}
-                    onChange={(e) => setTotalQuantity(e.target.value)}
                     className="border border-gray-300 rounded px-3 py-1 mb-2 w-full"
+                    readOnly
                   />
 
                   <input
