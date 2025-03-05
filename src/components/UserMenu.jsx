@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Avatar,
@@ -7,22 +7,57 @@ import {
   ListItemIcon,
   Menu,
   MenuItem,
-  Switch,
 } from "@mui/material";
-import { DarkModeOutlined } from "@mui/icons-material";
+import Badge from '@mui/material/Badge';
+import { IoNotifications } from "react-icons/io5";
+
 import { AccountCircleOutlined, Logout } from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 const UserMenu = () => {
-  const token = localStorage.getItem("authToken");
-  const decodedToken = jwtDecode(token);
-  const name = decodedToken?.unique_name[1];
   const [anchorEl, setAnchorEl] = React.useState(null);
   const opened = Boolean(anchorEl);
-
-
   const navigate = useNavigate();
+
+  const [userId, setUserId] = useState(null);
+  const [name, setName] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        setUserId(decodedToken?.nameid);
+      } catch (error) {
+        toast.error(error);
+      }
+    }
+  }, []);
+
+  const fetchUser = async () => {
+    if (!userId) return;
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await axios.get(
+        `https://localhost:7287/api/Auth/Profile/${userId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const userDataFromAPI = response?.data?.data[0];
+      setName(userDataFromAPI?.fullname);
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (userId) {
+      fetchUser();
+    }
+  }, [userId]);
 
   // methods
   const handleClick = (event) => {
@@ -33,11 +68,11 @@ const UserMenu = () => {
     setAnchorEl(null);
   };
 
- const handleLogout = () => {
-     localStorage.removeItem("authToken");
-     toast.success("User logout succcessfully");
-     navigate("/");
-   };
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    toast.success("User logout succcessfully");
+    navigate("/");
+  };
 
   return (
     <Box display="flex" alignItems="center" gap={1}>
@@ -49,10 +84,14 @@ const UserMenu = () => {
         aria-expanded={opened ? "true" : undefined}
       >
         <h1 className="text-white pr-2 capitalize">{name}</h1>
+
         <Avatar src={name} sx={{ width: 32, height: 32 }}>
           {name?.charAt(0)?.toUpperCase()}
         </Avatar>
       </IconButton>
+      <Badge badgeContent={4} color="primary">
+        <IoNotifications className="text-gray-300 cursor-pointer" size={30} />
+      </Badge>
 
       <Menu
         anchorEl={anchorEl}

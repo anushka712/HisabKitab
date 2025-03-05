@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import{ useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -24,16 +24,12 @@ const UserProfile = () => {
         const decodedToken = jwtDecode(token);
         setUserId(decodedToken?.nameid);
       } catch (error) {
-        toast.error("Invalid token, please log in again.");
+        toast.error(error);
       }
     }
   }, []);
 
-  useEffect(() => {
-    if (userId) {
-      fetchUser();
-    }
-  }, [userId]);
+  
 
   const fetchUser = async () => {
     if (!userId) return;
@@ -57,11 +53,17 @@ const UserProfile = () => {
         shopName: userDataFromAPI.shopName || "",
       });
     } catch (error) {
-      toast.error("Error fetching user profile.");
+      toast.error(error);
     } finally {
       setLoading(false);
     }
   };
+  
+  useEffect(() => {
+    if (userId) {
+      fetchUser();
+    }
+  }, [userId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

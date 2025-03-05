@@ -114,11 +114,15 @@ const SaveBills = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("authToken");
-      await axios.delete(`https://localhost:7287/api/Bills/${BillId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.delete(
+        `https://localhost:7287/api/Bills/${BillId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success(response?.data?.message);
       setLoading(false);
       setBills(bills.filter((bill) => bill.BillId !== BillId));
     } catch (error) {
