@@ -55,6 +55,7 @@ const Dashboard = () => {
     <>
       <div className="bg-black h-14 flex justify-between items-center px-4  sticky top-0">
         <h2 className=" text-white font-bold text-2xl">Sales Management</h2>
+
         <UserMenu />
       </div>
 
@@ -77,8 +78,8 @@ const Dashboard = () => {
                   <li
                     className={`flex mt-2 p-1 rounded-lg ${
                       location.pathname === path
-                        ? "bg-slate-400 text-black font-bold" // Active styles
-                        : "hover:bg-slate-400 hover:text-black" // Hover styles
+                        ? "bg-slate-400 text-black font-bold"
+                        : "hover:bg-slate-400 hover:text-black"
                     }`}
                   >
                     <Icon size={30} className="pr-2" />

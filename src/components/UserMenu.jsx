@@ -8,13 +8,14 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import Badge from '@mui/material/Badge';
-import { IoNotifications } from "react-icons/io5";
 
-import { AccountCircleOutlined, Logout } from "@mui/icons-material";
+
+
+import { AccountCircleOutlined, Dashboard, Logout } from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
 import axios from "axios";
+import Notification from "./Notification";
 
 const UserMenu = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -75,7 +76,7 @@ const UserMenu = () => {
   };
 
   return (
-    <Box display="flex" alignItems="center" gap={1}>
+    <Box display="flex" alignItems="center" gap={1} >
       <IconButton
         onClick={handleClick}
         size="small"
@@ -89,9 +90,7 @@ const UserMenu = () => {
           {name?.charAt(0)?.toUpperCase()}
         </Avatar>
       </IconButton>
-      <Badge badgeContent={4} color="primary">
-        <IoNotifications className="text-gray-300 cursor-pointer" size={30} />
-      </Badge>
+      <Notification/>
 
       <Menu
         anchorEl={anchorEl}
