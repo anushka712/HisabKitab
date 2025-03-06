@@ -51,7 +51,12 @@ const SalesBill = () => {
       });
       setCustomers(response?.data?.data);
     } catch (error) {
-      toast.error("Error fetching customers:", error.response || error.message);
+      toast.error(
+        `Error fetching customers: ${
+          error.response?.data?.message || error.message
+        }`
+      );
+
       if (error.response?.status === 400) {
         toast.error("Bad Request: Check query parameters or data format.");
       }
@@ -109,13 +114,34 @@ const SalesBill = () => {
          : "";
        updatedProducts[index].productName = selectedProduct
          ? selectedProduct.productName
-         : ""; // Set product name
+         : "";
      }
+
+     // Calculate total per product
+     const quantity = parseFloat(updatedProducts[index].quantity) || 0;
+     const rate = parseFloat(updatedProducts[index].rate) || 0;
+     const discountAmount =
+       parseFloat(updatedProducts[index].discountAmount) || 0;
+     updatedProducts[index].total = quantity * rate;
+
+     // Calculate total amount for all products
+     const totalBeforeDiscount = updatedProducts.reduce(
+       (acc, product) => acc + (parseFloat(product.total) || 0),
+       0
+     );
+
+     // Calculate total discount
+     const totalDiscount = updatedProducts.reduce(
+       (acc, product) => acc + (parseFloat(product.discountAmount) || 0),
+       0
+     );
+
+     // Final total amount after discount
+     setTotalAmount(totalBeforeDiscount - totalDiscount);
 
      return updatedProducts;
    });
  };
-
 
 
   // Add new product row to the form
@@ -141,9 +167,10 @@ const SalesBill = () => {
     setTotalQuantity(total);
   }, [products]);
 
+
+
   //Add Bill
   const handleSubmit = async (e) => {
-    setLoading(true);
     e.preventDefault();
     if (
       !billNo ||
@@ -158,6 +185,7 @@ const SalesBill = () => {
       toast.error("All fields are required.");
       return;
     }
+    setLoading(true);
     try {
       const token = localStorage.getItem("authToken");
 
@@ -275,7 +303,7 @@ const SalesBill = () => {
 
   return (
     <>
-      <div className="w-full h-screen md:ml-[20%] md:w-[80%]">
+      <div className="w-full h-screen md:ml-[20%] md:w-[80%] text-gray-800">
         <div className="p-4">
           {loading ? <Loader /> : <p className="text-lg font-semibold"></p>}
         </div>
@@ -338,7 +366,7 @@ const SalesBill = () => {
                   }}
                   disabled={isButtonDisabled}
                 >
-                  Issue New Bill
+                  Add Products to Invoice
                 </button>
 
                 {/* Product Table */}
@@ -349,12 +377,12 @@ const SalesBill = () => {
                       {products.map((product, index) => (
                         <div key={index} className="mb-4 flex w-full gap-6">
                           {/* Product Name */}
-                          <div className="mb-4 w-full">
-                            <label className="block text-sm font-semibold text-slate-900 mb-1">
+                          <div className="mb-4 w-full text-gray-700">
+                            <label className="block text-sm font-semibold  mb-1">
                               Product
                             </label>
                             <select
-                              className="border border-gray-300 rounded px-3 py-2 w-full text-gray-800 focus:ring-2 focus:ring-blue-500"
+                              className="border border-gray-300 rounded px-3 py-2 w-full  focus:ring-2 focus:ring-blue-500"
                               name="productId"
                               value={product.productId}
                               onChange={(e) => handleProductChange(index, e)}
@@ -378,7 +406,7 @@ const SalesBill = () => {
                           {product.productId && (
                             <div className="mb-4 w-full">
                               {/* Display 'Price: ' label */}
-                              <label className="block text-sm font-semibold text-slate-900 mb-1">
+                              <label className="block text-sm font-semibold  mb-1">
                                 Price:
                               </label>
                               <input
@@ -398,7 +426,7 @@ const SalesBill = () => {
 
                           {/* Quantity */}
                           <div className="mb-4 w-full">
-                            <label className="block text-sm font-semibold text-slate-900 mb-1">
+                            <label className="block text-sm font-semibold  mb-1">
                               Quantity
                             </label>
                             <input
@@ -413,7 +441,7 @@ const SalesBill = () => {
 
                           {/* Discount Amount */}
                           <div className="mb-4 w-full">
-                            <label className="block text-sm font-semibold text-slate-900 mb-1">
+                            <label className="block text-sm font-semibold  mb-1">
                               Discount Amount
                             </label>
                             <input
@@ -443,41 +471,53 @@ const SalesBill = () => {
                 )}
 
                 <div className="grid grid-cols-2 gap-4 mt-4 w-full">
-                  <input
-                    type="text"
-                    placeholder="Total Quantity"
-                    name="totalQuantity"
-                    value={totalQuantity}
-                    className="border border-gray-300 rounded px-3 py-1 mb-2 w-full"
-                    readOnly
-                  />
+                  <div>
+                    <label htmlFor="totalQuantity">Total Quantity:</label>
+                    <input
+                      type="text"
+                      placeholder="Total Quantity"
+                      name="totalQuantity"
+                      value={totalQuantity}
+                      className="border border-gray-300 rounded px-3 py-1 mb-2 w-full"
+                      readOnly
+                    />
+                  </div>
 
-                  <input
-                    type="text"
-                    placeholder="Total Amount"
-                    name="totalAmount"
-                    value={totalAmount}
-                    onChange={(e) => setTotalAmount(e.target.value)}
-                    className="border border-gray-300 rounded px-3 py-1 mb-2 w-full"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Received Amount"
-                    name="receiveAmount"
-                    value={receivedAmount}
-                    onChange={(e) => setReceivedAmount(e.target.value)}
-                    className="border border-gray-300 rounded px-3 py-1 mb-2 w-full"
-                  />
-                  <select
-                    name="payMode"
-                    value={payMode}
-                    onChange={(e) => setPayMode(e.target.value)}
-                    className="border border-gray-300 rounded px-3 py-1 mb-2 w-full"
-                  >
-                    <option value="">Select Payment Mode</option>
-                    <option value="0">Cash</option>
-                    <option value="1">Online</option>
-                  </select>
+                  <div>
+                    <label htmlFor="totalAmount">Total Amount</label>
+                    <input
+                      type="text"
+                      placeholder="Total Amount"
+                      name="totalAmount"
+                      value={totalAmount}
+                      readOnly
+                      className="border border-gray-300 rounded px-3 py-1 mb-2 w-full bg-gray-100 text-gray-600"
+                    />
+                  </div>
+
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="Received Amount"
+                      name="receiveAmount"
+                      value={receivedAmount}
+                      onChange={(e) => setReceivedAmount(e.target.value)}
+                      className="border border-gray-300 rounded px-3 py-1 mb-2 w-full"
+                    />
+                  </div>
+
+                  <div>
+                    <select
+                      name="payMode"
+                      value={payMode}
+                      onChange={(e) => setPayMode(e.target.value)}
+                      className="border border-gray-300 rounded px-3 py-1 mb-2 w-full"
+                    >
+                      <option value="">Select Payment Mode</option>
+                      <option value="0">Cash</option>
+                      <option value="1">Online</option>
+                    </select>
+                  </div>
                 </div>
 
                 <div className="flex justify-end space-x-2">

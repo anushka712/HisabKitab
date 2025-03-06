@@ -36,7 +36,7 @@ const Customers = () => {
               sx={{ fontSize: 60 }}
             />
             <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-              Restaurants
+              Groceries
             </Typography>
             <Typography
               className="text-center"
@@ -55,7 +55,7 @@ const Customers = () => {
               sx={{ fontSize: 60 }}
             />
             <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-              Cafe
+              Small Shops
             </Typography>
             <Typography
               className="text-center"

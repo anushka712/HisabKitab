@@ -41,14 +41,14 @@ const Signup = () => {
       );
 
       if (response.status === 200) {
-        toast.success(response.data.message);
+        toast.success(response?.data?.message);
         setTimeout(() => {
           navigate("/login");
         }, 2000);
       }
     } catch (error) {
       if (error.response) {
-        const errors = error.response.data.errors; // Access errors from response
+        const errors = error?.response?.data?.message; // Access errors from response
 
         // Check if there are specific validation errors for Password
         if (errors.Password) {
@@ -66,7 +66,7 @@ const Signup = () => {
           });
         } else {
           // Fallback if no errors or unexpected structure
-          toast.error(error.response.data.message || "Something went wrong");
+          toast.error(error?.response?.data?.message || "Something went wrong");
         }
       } else {
         toast.error("Frontend Error");

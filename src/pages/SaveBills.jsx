@@ -65,7 +65,7 @@ const SaveBills = () => {
         }
       );
       if (response.status === 200) {
-        toast.success("Bill added successfully!");
+        toast.success(response?.data?.message);
         setBillDate("");
         setPanNo("");
         setBillNO("");
@@ -78,7 +78,7 @@ const SaveBills = () => {
       }
     } catch (error) {
       console.error("Error adding bill:", error);
-      toast.error("Failed to add bill. Please try again.");
+      toast.error(error?.response?.data?.message);
     } finally {
       setLoading(false);
     }
