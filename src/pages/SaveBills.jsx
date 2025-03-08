@@ -146,12 +146,7 @@ const SaveBills = () => {
 
       <div className=" flex justify-between">
         <div className="flex items-center justify-between border border-gray-300 rounded-md px-2 w-64 my-2 ">
-          <input
-            type="text"
-            className="outline-none w-full pl-2 pr-8 py-1 text-gray-700"
-            placeholder="Search..."
-            onChange={(e) => setSearch(e.target.value)}
-          />
+          
           <button className="text-gray-500">
             <FaSearch size={20} />
           </button>
@@ -270,6 +265,9 @@ const SaveBills = () => {
               </th>
               <th className="border border-gray-300 p-2 text-left">Bill No</th>
               <th className="border border-gray-300 p-2 text-left">Bill</th>
+              <th className="border border-gray-300 p-2 text-left">
+                Wholesaler Name
+              </th>
               <th className="border border-gray-300 p-2 text-left">PAN NO</th>
               <th className="border border-gray-300 p-2 text-left">
                 Paid Amount
@@ -303,7 +301,10 @@ const SaveBills = () => {
                     </a>
                   </td>
 
-                  <td className="border border-gray-300 p-2">{bills.panNo}</td>
+                  <td className="border border-gray-300 p-2">
+                    {bills.wholeSellerName}
+                  </td>
+                  <td className="border border-gray-300 p-2">{bills?.panNo}</td>
                   <td className="border border-gray-300 p-2">
                     {bills.paidAmount}
                   </td>

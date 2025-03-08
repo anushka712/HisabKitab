@@ -290,7 +290,7 @@ const Stock = () => {
                     type="text"
                     value={unit}
                     onChange={(e) => setUnit(e.target.value)}
-                    placeholder="Total Quantity"
+                    placeholder="Unit"
                     className="border border-gray-300 rounded px-3 py-1 w-full mb-2"
                   />
                   <br />
